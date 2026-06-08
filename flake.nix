@@ -13,6 +13,33 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;}
-    (inputs.import-tree ./modules);
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.top@
+    {
+      config,
+      settings,
+      withSystem,
+      moduleWithSystem,
+      ...
+    }: {
+      imports = with inputs; [
+        (import-tree ./modules)
+        disko.flakeModules.default
+        preservation.nixosModules.default
+      ];
+      systems = [
+        "x86_64-linux"
+      ];
+      perSystem = {
+        config,
+        pkgs,
+        ...
+      }: {
+        # Recommended: move all package definitions here.
+        # e.g. (assuming you have a nixpkgs input)
+        # packages.foo = pkgs.callPackage ./foo/package.nix { };
+        # packages.bar = pkgs.callPackage ./bar/package.nix {
+        #   foo = config.packages.foo;
+        # };
+      };
+    };
 }
