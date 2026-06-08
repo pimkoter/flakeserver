@@ -13,8 +13,8 @@
       # Default
       autoUpgrade
       autoGarbage
-      preservation
       networking
+      disko
       caddy
       common
 
