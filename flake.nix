@@ -13,8 +13,7 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.top@
-    {
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({
       config,
       settings,
       withSystem,
@@ -29,11 +28,7 @@
       systems = [
         "x86_64-linux"
       ];
-      perSystem = {
-        config,
-        pkgs,
-        ...
-      }: {
+      perSystem = {}: {
         # Recommended: move all package definitions here.
         # e.g. (assuming you have a nixpkgs input)
         # packages.foo = pkgs.callPackage ./foo/package.nix { };
@@ -41,5 +36,5 @@
         #   foo = config.packages.foo;
         # };
       };
-    };
+    });
 }
