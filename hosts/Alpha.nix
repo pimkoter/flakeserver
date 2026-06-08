@@ -16,6 +16,7 @@
       preservation
       networking
       caddy
+      common
 
       # Custom
       piHole
