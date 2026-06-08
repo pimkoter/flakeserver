@@ -21,10 +21,10 @@
       moduleWithSystem,
       ...
     }: {
-      imports = with inputs; [
-        (import-tree ./modules)
-        disko.flakeModules.default
-        preservation.nixosModules.default
+      imports = [
+        (inputs.import-tree ./modules)
+        inputs.disko.flakeModules.default
+        inputs.preservation.nixosModules.default
       ];
       systems = [
         "x86_64-linux"
