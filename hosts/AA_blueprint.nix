@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  hostName = "alpha";
+  hostName = "blueprint";
 in {
   flake.nixosConfigurations.${hostName} = inputs.nixpkgs.lib.nixosSystem {
     modules = [
