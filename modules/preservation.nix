@@ -2,10 +2,8 @@
   inputs,
   self,
   ...
-}: let
-  module = "preservation";
-in {
-  inputs.flake.nixosModules.${module} = {pkgs, ...}: {
+}: {
+  inputs.flake.nixosModules.preservation = {pkgs, ...}: {
     boot.tmp.cleanOnBoot = true;
     preservation = {
       enable = true;

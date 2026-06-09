@@ -12,6 +12,6 @@ fi
 echo "Starting installation for: $machine_name"
 
 sudo nix --extra-experimental-features "nix-command flakes" \
-  run 'github:nix-community/disko/latest#disko-install' -- \
-  --flake ".#$machine_name" \
-  --disk main /dev/sda
+run github:nix-community/disko -- --mode disko ./flake.nix#$machine_name
+
+sudo nixos-install --flake .#$machine_name --root /mnt

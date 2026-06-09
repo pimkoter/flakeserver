@@ -2,14 +2,14 @@
   inputs,
   self,
   ...
-}: let
-  module = "disko";
-in {
-  inputs.flake.nixosModules.${module} = {pkgs, ...}: {
-    fileSystems."/nix".neededForBoot = true;
-    fileSystems."/persistent".neededForBoot = true;
+}: {
+  inputs.flake.nixosModules.disko = {
+    fileSystems = {
+      "/nix".neededForBoot = true;
+      "/persistent".neededForBoot = true;
+    };
 
-    inputs.disko.devices.nodev = {
+    disko.devices.nodev = {
       "/" = {
         fsType = "tmpfs";
         mountOptions = [
@@ -19,7 +19,7 @@ in {
       };
     };
 
-    inputs.disko.devices.disk.main = {
+    disko.devices.disk.main = {
       device = "/dev/sda";
       type = "disk";
 
@@ -40,6 +40,15 @@ in {
           type = "filesystem";
           format = "vfat";
           mountpoint = "/boot";
+        };
+      };
+
+      content.partitions.swap = {
+        size = "4G";
+
+        content = {
+          type = "swap";
+          resumeDevice = true;
         };
       };
 
