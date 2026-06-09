@@ -17,7 +17,7 @@
       imports = [
         inputs.disko.flakeModules.default
         inputs.preservation.nixosModules.default
-        (inputs.import-tree ./.)
+        (inputs.import-tree {src = ./.;})
       ];
       systems = ["x86_64-linux"];
     };
