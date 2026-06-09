@@ -1,6 +1,7 @@
 {
   inputs,
   self,
+  ...
 }: let
   module = "blueprint";
 in {
