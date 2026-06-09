@@ -14,16 +14,12 @@
   outputs = inputs @ {flake-parts, ...}:
   # https://flake.parts/module-arguments.html
     flake-parts.lib.mkFlake {inherit inputs;} {
-      inputs.import-tree =
-        {
-          src = ./.;
-        }
-        // {
-          imports = [
-            inputs.disko.flakeModules.default
-            inputs.preservation.nixosModules.default
-          ];
-          systems = ["x86_64-linux"];
-        };
+      imports = [
+        inputs.disko.flakeModules.default
+        inputs.preservation.nixosModules.default
+        (inputs.import-tree {src = ./hosts;})
+        (inputs.import-tree {src = ./modules;})
+      ];
+      systems = ["x86_64-linux"];
     };
 }
