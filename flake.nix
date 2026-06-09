@@ -2,6 +2,7 @@
   description = "KoterOS but flake-part based";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    flake-parts = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
     preservation.url = "github:nix-community/preservation";
     disko = {
