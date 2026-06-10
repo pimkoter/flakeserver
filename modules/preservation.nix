@@ -4,7 +4,6 @@
   ...
 }: {
   inputs.flake.nixosModules.preservation = {pkgs, ...}: {
-    boot.tmp.cleanOnBoot = true;
     preservation = {
       enable = true;
       preserveAt."/persistent" = {
