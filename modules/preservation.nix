@@ -3,7 +3,11 @@
   self,
   ...
 }: {
-  inputs.flake.nixosModules.preservation = {pkgs, ...}: {
+  inputs.flake.nixosModules.preservation = {
+    pkgs,
+    config,
+    ...
+  }: {
     preservation = {
       enable = true;
       preserveAt."/persistent" = {
