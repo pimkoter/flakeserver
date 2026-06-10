@@ -10,6 +10,7 @@
     pkgs,
     ...
   }: {
+    boot.initrd.systemd.enable = true;
     preservation = {
       enable = true;
       preserveAt."/persistent" = {
