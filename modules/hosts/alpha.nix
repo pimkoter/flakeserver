@@ -5,13 +5,13 @@
 }: {
   flake.nixosConfigurations.alpha = inputs.nixpkgs.lib.nixosSystem {
     modules = [
-      self.boot
-      self.disko
-      self.miscellaneous
-      self.networking
-      self.pkgs
-      self.preservation
-      self.users
+      self.nixosModules.boot
+      self.nixosModules.disko
+      self.nixosModules.miscellaneous
+      self.nixosModules.networking
+      self.nixosModules.pkgs
+      self.nixosModules.preservation
+      self.nixosModules.users
     ];
   };
 }
