@@ -3,11 +3,6 @@
 echo "Welcome to installer"
 read -p "Type machine name:" machine_name
 
-if [-z "$machine_name" ]; then
-  echo "ERROR: Machine name can't be empty" 
-  exit 1
-fi 
-
 echo "Starting installation for machine $machine_name"
 
 sudo nix --extra-experimental-features "nix-command flakes" \
