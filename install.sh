@@ -10,7 +10,7 @@ fi
 
 echo "Starting installation for machine $machine_name"
 
-sudo nix --extra-experimental-featurs "nix-command flakes" \
-run 'github:nix-community/disko/latest#disko-install' -- \
---flake .#$machine_name \
---disk main /dev/sda
+sudo nix --extra-experimental-features "nix-command flakes" \
+  run 'github:nix-community/disko/latest#disko-install' -- \
+  --flake .#$machine_name \
+  --disk main /dev/sda \
