@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -12,9 +12,9 @@
   time.timeZone = "Europe/Kyiv";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  users.users.pim = {
+  users.users.yurii = {
     isNormalUser = true;
-    initialPassword = "pimiseenleukejongen";
+    initialPassword = "12345";
     extraGroups = ["wheel"];
     packages = with pkgs; [
       tree
@@ -27,5 +27,6 @@
   ];
 
   services.openssh.enable = true;
+
   system.stateVersion = "25.11";
 }
