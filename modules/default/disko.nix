@@ -5,10 +5,8 @@
 }: {
   flake.nixosModules.disko = {
     imports = [inputs.disko.nixosModules.disko];
-    fileSystems = {
-      "/nix".neededForBoot = true;
-      "/persistent".neededForBoot = true;
-    };
+    fileSystems."/nix".neededForBoot = true;
+    fileSystems."/persistent".neededForBoot = true;
 
     disko.devices.nodev = {
       "/" = {
