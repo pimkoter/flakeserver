@@ -7,6 +7,10 @@
     networking = {
       useDHCP = false;
       nameservers = self.settings.networking.nameservers;
+      firewall = {
+        enable = true;
+        trustedInterfaces = ["tailscale0"];
+      };
     };
     services = {
       networkmanager.enable = false;
@@ -20,10 +24,6 @@
         enable = true;
         bantime = "10m";
         bantime-increment.factor = "6";
-      };
-      firewall = {
-        enable = true;
-        trustedInterfaces = ["tailscale0"];
       };
       resolved.enable = false;
     };
