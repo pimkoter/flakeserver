@@ -12,8 +12,5 @@
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake {inherit inputs;}
-    (inputs.import-tree ./modules)
-    // {
-      _module.args.settings = self.nixosModules.settings;
-    };
+    (inputs.import-tree ./modules);
 }
