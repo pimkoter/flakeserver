@@ -1,6 +1,7 @@
 {
   self,
   inputs,
+  ...
 }: {
   flake.nixosModules.immich = let
     immichDir = "${self.settings.disk.mntPoint}/foto";

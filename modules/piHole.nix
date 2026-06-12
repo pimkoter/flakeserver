@@ -1,6 +1,7 @@
 {
   self,
   inputs,
+  ...
 }: {
   flake.nixosModules.piHole = {
     # Pi-hole FTL

@@ -1,6 +1,7 @@
 {
   self,
   inputs,
+  ...
 }: {
   flake.nixosModules.unBound = {
     services.unbound = {
