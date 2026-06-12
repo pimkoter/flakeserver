@@ -7,13 +7,13 @@
     networking = {
       useDHCP = false;
       nameservers = self.settings.networking.nameservers;
+      networkmanager.enable = false;
       firewall = {
         enable = true;
         trustedInterfaces = ["tailscale0"];
       };
     };
     services = {
-      networkmanager.enable = false;
       openssh.enable = true;
       tailscale = {
         enable = true;
