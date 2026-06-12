@@ -3,9 +3,9 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.boot = {modulesPath, ...}: {
+  flake.nixosModules.boot = {
     imports = [
-      (modulesPath + "/profiles/qemu-guest.nix")
+      "${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
     ];
     boot = {
       loader = {

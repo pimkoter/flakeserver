@@ -5,7 +5,7 @@
   flake.nixosModules.autoUpgrade = {
     system.autoUpgrade = {
       enable = true;
-      flake = "github.com/pimkoter/flakeserver";
+      flake = self.settings.admin.gitHubAddr;
       allowReboot = true;
       rebootWindow = {
         lower = "01:00";

@@ -47,7 +47,7 @@
           active = true;
           start = "192.168.178.50";
           end = "192.168.178.254";
-          router = "192.168.178.1";
+          router = self.settings.admin.routerIp;
           leaseTime = "6h";
           ipv6 = true;
           rapidCommit = true;

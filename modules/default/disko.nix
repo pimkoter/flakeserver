@@ -19,7 +19,7 @@
     };
 
     disko.devices.disk.main = {
-      device = "/dev/sda";
+      device = self.settings.disks.drive2;
       type = "disk";
 
       content.type = "gpt";

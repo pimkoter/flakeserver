@@ -5,9 +5,9 @@
 }: {
   flake.nixosModules.users = {
     users.users = {
-      pim = {
+      ${self.settings.admin.name} = {
         isNormalUser = true;
-        hashedPassword = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
+        hashedPassword = self.settings.admin.hashedPassword;
         extraGroups = ["wheel"];
       };
     };

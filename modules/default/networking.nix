@@ -4,22 +4,17 @@
   ...
 }: {
   flake.nixosModules.networking = {
-    settings,
-    lib,
-    ...
-  }: {
     networking = {
       useDHCP = false;
-      nameservers = settings.networking.nameservers;
+      nameservers = self.settings.networking.nameservers;
     };
     services = {
       networkmanager.enable = false;
-      openssh = {
-        enable = true;
-      };
+      openssh.enable = true;
       tailscale = {
         enable = true;
-        useRoutingFeatures = lib.mkDefault "client";
+        useRoutingFeatures = "client";
+        extraUpFlags = ["--ssh" "--operator=${self.settings.admin.name}"];
       };
       fail2ban = {
         enable = true;

@@ -7,7 +7,7 @@
       enable = true;
       settings = {
         server = {
-          interface = ["127.0.0.1" "192.168.178.2"];
+          interface = ["127.0.0.1" self.settings.networking.nameServers];
           port = 5335;
           prefetch = "yes";
           do-ip6 = "no";
