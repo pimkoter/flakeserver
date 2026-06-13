@@ -19,21 +19,19 @@
       };
     };
   in {
-    # --- PART 1: DEFINITIONS (Schema with defaults) ---
     options = {
       hosts = lib.mkOption {
         type = lib.types.attrsOf hostSettings;
         default = {};
       };
-
       disks = {
-        drive = lib.mkOption {type = lib.types.str;};
+        drive1 = lib.mkOption {type = lib.types.str;};
+        drive2 = lib.mkOption {type = lib.types.str;};
         mntPoint = lib.mkOption {
           type = lib.types.str;
           default = "/media";
         };
       };
-
       admin = {
         name = lib.mkOption {
           type = lib.types.str;
@@ -56,7 +54,6 @@
       };
     };
 
-    # --- PART 2: CONFIGURATION  ---
     config = {
       hosts = {
         alpha = {
@@ -77,27 +74,25 @@
           ipAddr = "192.168.178.5";
         };
       };
-
-      disk = {
+      disks = {
         drive1 = "/dev/sda";
         drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
       };
-
       admin = {
-        hashedPassword = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
+        hashedPassword = "$6$...";
         gitHubAddr = "github.com/pimkoter/flakeserver";
       };
-    };
 
-    networking.nameservers = let
-      allHosts = builtins.attrValues config.settings.hosts;
-      piHoleHost = lib.findFirst (h: h.isPiHole) null allHosts;
-    in [
-      (
-        if piHoleHost != null
-        then piHoleHost.ipAddr
-        else "1.1.1.1"
-      )
-    ];
+      networking.nameservers = let
+        allHosts = builtins.attrValues config.hosts; # ← fixed
+        piHoleHost = lib.findFirst (h: h.isPiHole) null allHosts;
+      in [
+        (
+          if piHoleHost != null
+          then piHoleHost.ipAddr
+          else "1.1.1.1"
+        )
+      ];
+    };
   };
 }

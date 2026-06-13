@@ -2,11 +2,11 @@
   self,
   inputs,
   ...
-}: let
-  base = self.nixosModules.settings.disk.mntPoint;
-  network = "jellyStack";
-in {
-  flake.nixosModules.jellyStack = {
+}: {
+  flake.nixosModules.jellyStack = {config, ...}: let
+    base = config.disks.mntPoint;
+    network = "jellyStack";
+  in {
     systemd.tmpfiles.rules = [
       "d '${base}/config/jellyfin' 0755 1000 1000 -"
       "d '${base}/config/prowlarr' 0755 1000 1000 -"
@@ -21,7 +21,6 @@ in {
       backend = "docker";
       content = {
         networks.${network} = {driver = "bridge";};
-
         services = {
           jellyfin = {
             image = "jellyfin/jellyfin";
@@ -29,7 +28,6 @@ in {
             volumes = ["${base}/config/jellyfin:/config" "${base}/movies:/movies" "${base}/shows:/tv"];
             ports = ["8096:8096"];
           };
-
           prowlarr = {
             image = "lscr.io/linuxserver/prowlarr:latest";
             networks = [network];
@@ -41,7 +39,6 @@ in {
               PGID = "1000";
             };
           };
-
           radarr = {
             image = "lscr.io/linuxserver/radarr:latest";
             networks = [network];
@@ -53,7 +50,6 @@ in {
               PGID = "1000";
             };
           };
-
           sonarr = {
             image = "lscr.io/linuxserver/sonarr:latest";
             networks = [network];
@@ -65,7 +61,6 @@ in {
               PGID = "1000";
             };
           };
-
           qbittorrent = {
             image = "lscr.io/linuxserver/qbittorrent:latest";
             networks = [network];
@@ -77,7 +72,6 @@ in {
               PGID = "1000";
             };
           };
-
           bazarr = {
             image = "lscr.io/linuxserver/bazarr:latest";
             networks = [network];
@@ -89,7 +83,6 @@ in {
               PGID = "1000";
             };
           };
-
           seerr = {
             image = "ghcr.io/seerr-team/seerr:latest";
             networks = [network];
@@ -105,7 +98,7 @@ in {
       };
     };
 
-    users.users.${self.settings.admin.name} = {
+    users.users.${config.admin.name} = {
       extraGroups = ["docker"];
     };
   };

@@ -3,8 +3,7 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.piHole = {
-    # Pi-hole FTL
+  flake.nixosModules.piHole = {config, ...}: {
     services.pihole-ftl = {
       enable = true;
       openFirewallDNS = true;
@@ -48,7 +47,7 @@
           active = true;
           start = "192.168.178.50";
           end = "192.168.178.254";
-          router = self.nixosModules.settings.admin.routerIp;
+          router = config.admin.routerIp;
           leaseTime = "6h";
           ipv6 = true;
           rapidCommit = true;
@@ -92,21 +91,8 @@
           };
         };
       };
-
-      lists = [
-        # Lists can be added via URL
-        #{
-        #  url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/all_domains.txt";
-        #  type = "block";
-        #  enabled = true;
-        #  description = "ZachLagden Blocklist";
-        #}
-      ];
+      lists = [];
     };
-
-    # -----------------------------
-    # Pi-hole web UI (HTTP)
-    # -----------------------------
     services.pihole-web = {
       enable = true;
       hostName = "127.0.0.1";

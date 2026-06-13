@@ -3,9 +3,9 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.drive2 = {
-    fileSystems.${self.nixosModules.settings.disk.mntPoint} = {
-      device = self.nixosModules.settings.disk.drive2;
+  flake.nixosModules.drive2 = {config, ...}: {
+    fileSystems.${config.disks.mntPoint} = {
+      device = config.disks.drive2;
       fsType = "ext4";
     };
   };

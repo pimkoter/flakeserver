@@ -3,20 +3,19 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.immich = let
-    immichDir = "${self.nixosModules.settings.disk.mntPoint}/foto";
+  flake.nixosModules.immich = {config, ...}: let
+    immichDir = "${config.disks.mntPoint}/foto";
   in {
     services.immich = {
       enable = true;
       host = "0.0.0.0";
       openFirewall = true;
-      mediaLocation = "${immichDir}";
+      mediaLocation = immichDir;
     };
-
     systemd.services = {
-      immich-server.serviceConfig.ReadWritePaths = ["${immichDir}"];
-      immich-microservices.serviceConfig.ReadWritePaths = ["${immichDir}"];
-      immich-machine-learning.serviceConfig.ReadWritePaths = ["${immichDir}"];
+      immich-server.serviceConfig.ReadWritePaths = [immichDir];
+      immich-microservices.serviceConfig.ReadWritePaths = [immichDir];
+      immich-machine-learning.serviceConfig.ReadWritePaths = [immichDir];
     };
   };
 }
