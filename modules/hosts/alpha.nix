@@ -17,6 +17,7 @@ in {
       preservation
       shell
       users
+      settings
 
       # Host specific modules
       piHole
