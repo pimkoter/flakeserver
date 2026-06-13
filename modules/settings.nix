@@ -58,48 +58,46 @@
 
     # --- PART 2: CONFIGURATION  ---
     config = {
-      settings = {
-        hosts = {
-          alpha = {
-            hostName = "alpha";
-            ipAddr = "192.168.178.2";
-            isPiHole = true;
-          };
-          beta = {
-            hostName = "beta";
-            ipAddr = "192.168.178.3";
-          };
-          gamma = {
-            hostName = "gamma";
-            ipAddr = "192.168.178.4";
-          };
-          delta = {
-            hostName = "delta";
-            ipAddr = "192.168.178.5";
-          };
+      hosts = {
+        alpha = {
+          hostName = "alpha";
+          ipAddr = "192.168.178.2";
+          isPiHole = true;
         };
-
-        disk = {
-          drive1 = "/dev/sda";
-          drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
+        beta = {
+          hostName = "beta";
+          ipAddr = "192.168.178.3";
         };
-
-        admin = {
-          hashedPassword = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
-          gitHubAddr = "github.com/pimkoter/flakeserver";
+        gamma = {
+          hostName = "gamma";
+          ipAddr = "192.168.178.4";
+        };
+        delta = {
+          hostName = "delta";
+          ipAddr = "192.168.178.5";
         };
       };
 
-      networking.nameservers = let
-        allHosts = builtins.attrValues config.settings.hosts;
-        piHoleHost = lib.findFirst (h: h.isPiHole) null allHosts;
-      in [
-        (
-          if piHoleHost != null
-          then piHoleHost.ipAddr
-          else "1.1.1.1"
-        )
-      ];
+      disk = {
+        drive1 = "/dev/sda";
+        drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
+      };
+
+      admin = {
+        hashedPassword = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
+        gitHubAddr = "github.com/pimkoter/flakeserver";
+      };
     };
+
+    networking.nameservers = let
+      allHosts = builtins.attrValues config.settings.hosts;
+      piHoleHost = lib.findFirst (h: h.isPiHole) null allHosts;
+    in [
+      (
+        if piHoleHost != null
+        then piHoleHost.ipAddr
+        else "1.1.1.1"
+      )
+    ];
   };
 }
