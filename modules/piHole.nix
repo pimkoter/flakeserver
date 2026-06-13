@@ -48,7 +48,7 @@
           active = true;
           start = "192.168.178.50";
           end = "192.168.178.254";
-          router = self.settings.admin.routerIp;
+          router = self.nixosModules.settings.admin.routerIp;
           leaseTime = "6h";
           ipv6 = true;
           rapidCommit = true;

@@ -6,7 +6,7 @@
   flake.nixosModules.autoUpgrade = {
     system.autoUpgrade = {
       enable = true;
-      flake = self.settings.admin.gitHubAddr;
+      flake = self.nixosModules.settings.admin.gitHubAddr;
       allowReboot = true;
       rebootWindow = {
         lower = "01:00";

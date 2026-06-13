@@ -4,7 +4,7 @@
   ...
 }: {
   flake.nixosModules.immich = let
-    immichDir = "${self.settings.disk.mntPoint}/foto";
+    immichDir = "${self.nixosModules.settings.disk.mntPoint}/foto";
   in {
     services.immich = {
       enable = true;

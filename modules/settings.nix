@@ -27,11 +27,7 @@
       };
 
       disks = {
-        drive1 = lib.mkOption {
-          type = lib.types.str;
-          default = "/dev/sda";
-        };
-        drive2 = lib.mkOption {type = lib.types.str;};
+        drive = lib.mkOption {type = lib.types.str;};
         mntPoint = lib.mkOption {
           type = lib.types.str;
           default = "/media";

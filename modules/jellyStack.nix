@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  base = self.settings.disk.mntPoint;
+  base = self.nixosModules.settings.disk.mntPoint;
   network = "jellyStack";
 in {
   flake.nixosModules.jellyStack = {

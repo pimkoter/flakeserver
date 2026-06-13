@@ -6,7 +6,7 @@
   flake.nixosModules.networking = {
     networking = {
       useDHCP = false;
-      nameservers = self.settings.networking.nameservers;
+      nameservers = self.nixosModules.settings.networking.nameservers;
       networkmanager.enable = false;
       firewall = {
         enable = true;
@@ -18,7 +18,7 @@
       tailscale = {
         enable = true;
         useRoutingFeatures = "client";
-        extraUpFlags = ["--ssh" "--operator=${self.settings.admin.name}"];
+        extraUpFlags = ["--ssh" "--operator=${self.nixosModules.settings.admin.name}"];
       };
       fail2ban = {
         enable = true;
