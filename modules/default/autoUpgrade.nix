@@ -3,22 +3,19 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.autoUpgrade = {
+  flake.nixosModules.autoUpgrade = {config, ...}: {
     system.autoUpgrade = {
       enable = true;
-      flake = self.nixosModules.settings.admin.gitHubAddr;
+      flake = config.admin.gitHubAddr;
       allowReboot = true;
       rebootWindow = {
         lower = "01:00";
         upper = "05:00";
       };
-      flags = [
-        "--print-build-logs"
-      ];
+      flags = ["--print-build-logs"];
       dates = "03:00";
       randomizedDelaySec = "1h";
     };
-
     nix = {
       gc = {
         automatic = true;

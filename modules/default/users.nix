@@ -3,13 +3,11 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.users = {
-    users.users = {
-      ${self.nixosModules.settings.admin.name} = {
-        isNormalUser = true;
-        hashedPassword = self.nixosModules.settings.admin.hashedPassword;
-        extraGroups = ["wheel"];
-      };
+  flake.nixosModules.users = {config, ...}: {
+    users.users.${config.admin.name} = {
+      isNormalUser = true;
+      hashedPassword = config.admin.hashedPassword;
+      extraGroups = ["wheel"];
     };
   };
 }

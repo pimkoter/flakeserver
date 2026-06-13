@@ -3,10 +3,9 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.networking = {
+  flake.nixosModules.networking = {config, ...}: {
     networking = {
       useDHCP = false;
-      nameservers = self.nixosModules.settings.networking.nameservers;
       networkmanager.enable = false;
       firewall = {
         enable = true;
@@ -18,7 +17,7 @@
       tailscale = {
         enable = true;
         useRoutingFeatures = "client";
-        extraUpFlags = ["--ssh" "--operator=${self.nixosModules.settings.admin.name}"];
+        extraUpFlags = ["--ssh" "--operator=${config.admin.name}"];
       };
       fail2ban = {
         enable = true;
