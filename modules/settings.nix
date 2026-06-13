@@ -49,7 +49,7 @@
         gitHubAddr = lib.mkOption {type = lib.types.str;};
         flakeDir = lib.mkOption {
           type = lib.types.str;
-          default = "/home/pim/flakeserver";
+          default = "/home/pimkoter/flakeserver";
         };
       };
     };
