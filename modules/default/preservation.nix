@@ -13,6 +13,7 @@
           {
             directory = "/var/lib/nixos";
             inInitrd = true;
+            how = "symlink";
           }
         ];
 
