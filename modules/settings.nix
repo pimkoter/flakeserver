@@ -79,7 +79,7 @@
         drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
       };
       admin = {
-        hashedPassword = "$6$...";
+        hashedPassword = "$6$sIfjCM5qq91ch98l$ZPL9I/xe22Xdpe60QLDz3wStTxDqKIkvz8/KRh7YKOFN.d6YroSuQR.xIao0Zdg5u4XnBcurPd4i5RXtm1.qw1";
         gitHubAddr = "github.com/pimkoter/flakeserver";
       };
 
