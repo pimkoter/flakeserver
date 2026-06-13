@@ -20,7 +20,7 @@
     };
   in {
     # --- PART 1: DEFINITIONS (Schema with defaults) ---
-    options.settings = {
+    options = {
       hosts = lib.mkOption {
         type = lib.types.attrsOf hostSettings;
         default = {};
