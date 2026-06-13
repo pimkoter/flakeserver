@@ -5,8 +5,16 @@
 }: {
   flake.nixosModules.networking = {config, ...}: {
     networking = {
+      hostName = config.hosts.${config.networking.hostName}.hostName;
       useDHCP = false;
       networkmanager.enable = false;
+      defaultGateway = config.admin.routerIp;
+      interfaces.ens18.ipv4.addresses = [
+        {
+          address = config.hosts.${config.networking.hostName}.ipAddr;
+          prefixLength = 24;
+        }
+      ];
       firewall = {
         enable = true;
         trustedInterfaces = ["tailscale0"];
