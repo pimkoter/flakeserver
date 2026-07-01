@@ -111,11 +111,6 @@
       };
       lists = [];
     };
-    services.pihole-web = {
-      enable = true;
-      hostName = "0.0.0.0";
-      ports = ["80r" "443s"];
-    };
     environment.systemPackages = with pkgs; [
       pihole-ftl
       pihole-web
