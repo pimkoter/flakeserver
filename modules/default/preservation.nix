@@ -36,10 +36,7 @@
       };
     };
 
-    systemd.suppressedSystemUnits = ["systemd-machine-id-commit.service"];
-    environment.etc."machine-id" = {
-      neededForBoot = true;
-    };
+    systemd.services.systemd-machine-id-commit.enable = false;
 
     boot.initrd = {
       supportedFilesystems = ["btrfs"];
