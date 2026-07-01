@@ -29,45 +29,49 @@
 
         users.pim = {
           directories = [
-            "downloads"
-            ".config/containers"
+            "flakeserver"
             ".ssh"
           ];
         };
       };
     };
 
-    boot.initrd.supportedFilesystems = ["btrfs"];
-    boot.initrd.systemd.services.rollback = {
-      description = "Wipe and rollback ephemeral BTRFS root subvolume to a pristine state";
-      wantedBy = ["initrd.target"];
+    systemd.suppressedSystemUnits = ["systemd-machine-id-commit.service"];
+    environment.etc."machine-id".neededForBoot = true;
 
-      after = ["initrd-root-device.target" "local-fs-pre.target"];
-      before = ["sysroot.mount"];
+    boot.initrd = {
+      supportedFilesystems = ["btrfs"];
+      systemd.services.rollback = {
+        description = "Wipe and rollback ephemeral BTRFS root subvolume to a pristine state";
+        wantedBy = ["initrd.target"];
 
-      unitConfig.DefaultDependencies = "no";
-      serviceConfig.Type = "oneshot";
+        after = ["initrd-root-device.target" "local-fs-pre.target"];
+        before = ["sysroot.mount"];
 
-      script = ''
-        mkdir -p /tmpdir
-        mount -t btrfs /dev/sda4 /tmpdir
+        unitConfig.DefaultDependencies = "no";
+        serviceConfig.Type = "oneshot";
 
-        if [ -d /tmpdir/root ]; then
-            echo "Safely clearing nested subvolumes inside root..."
-            # Clean up potential nested subvolumes
-            btrfs subvolume list -o /tmpdir/root | awk '{print $9}' | while read -r subvolume; do
-                btrfs subvolume delete "/tmpdir/$subvolume"
-            done
+        script = ''
+          mkdir -p /tmpdir
+          mount -t btrfs /dev/sda4 /tmpdir
 
-            echo "Wiping ephemeral root subvolume..."
-            btrfs subvolume delete /tmpdir/root
-        fi
+          if [ -d /tmpdir/root ]; then
+              echo "Safely clearing nested subvolumes inside root..."
+              # Clean up potential nested subvolumes
+              btrfs subvolume list -o /tmpdir/root | awk '{print $9}' | while read -r subvolume; do
+                  btrfs subvolume delete "/tmpdir/$subvolume"
+              done
 
-        echo "Restoring pristine root from snapshot..."
-        btrfs subvolume snapshot /tmpdir/root-blank /tmpdir/root
+              echo "Wiping ephemeral root subvolume..."
+              btrfs subvolume delete /tmpdir/root
+          fi
 
-        umount /tmpdir
-      '';
+          echo "Restoring pristine root from snapshot..."
+          btrfs subvolume snapshot /tmpdir/root-blank /tmpdir/root
+
+          umount /tmpdir
+        '';
+      };
     };
   };
 }
