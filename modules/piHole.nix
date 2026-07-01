@@ -98,5 +98,6 @@
       hostName = "0.0.0.0";
       ports = ["80r" "443s"];
     };
+    networking.firewall.allowedTCPPorts = [80 443];
   };
 }
