@@ -6,7 +6,7 @@ echo "          NixOS Flake Installer           "
 echo "=========================================="
 
 # 1. Prompt for machine name
-read -p "Enter target machine name: " machine_name
+read -p "Enter target machine name (e.g., beta): " machine_name
 
 if [[ -z "$machine_name" ]]; then
     echo "❌ Error: Machine name cannot be empty."
@@ -25,12 +25,16 @@ sudo nix run github:nix-community/disko -- --mode disko --flake .#"$machine_name
 
 # 4. Create the pristine Btrfs rollback snapshot required by preservation.nix
 echo "📦 Initializing the pristine root snapshot template..."
-mkdir -p /tmp/raw-btrfs
-# FIXED: Using predictable partlabel path instead of brittle /dev/sda3 node
-sudo mount -t btrfs /dev/disk/by-partlabel/disk-main-root /tmp/raw-btrfs
-sudo btrfs subvolume snapshot /tmp/raw-btrfs/root /tmp/raw-btrfs/root-blank
-sudo umount /tmp/raw-btrfs
-rmdir /tmp/raw-btrfs
+mkdir -p /tmp/btrfs-root
+# Mount the root of the Btrfs filesystem (subvolid=5) to a temporary directory
+sudo mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/disk-main-root /tmp/btrfs-root
+
+# Create the blank snapshot tracking the clean root state Disko just deployed
+sudo btrfs subvolume snapshot /tmp/btrfs-root/root /tmp/btrfs-root/root-blank
+
+# Clean up temporary snapshot mount point
+sudo umount /tmp/btrfs-root
+rmdir /tmp/btrfs-root
 
 # 5. Fix empty machine-id bug that crashes systemd-boot installation
 echo "🆔 Pre-generating system machine-id to prevent bootloader errors..."
