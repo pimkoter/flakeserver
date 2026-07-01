@@ -27,7 +27,7 @@
           webserver = {
             active = true;
             port = lib.mkForce "443s";
-            domain = "192.168.178.2";
+            domain = lib.mkForce "192.168.178.2";
           };
 
           password = "pimiseenleukejongen";
