@@ -38,25 +38,36 @@
     };
 
     boot.initrd.supportedFilesystems = ["btrfs"];
-    boot.initrd.postDeviceCommands = lib.mkAfter ''
-      mkdir /tmpdir
-      mount -t btrfs /dev/sda4 /tmpdir
+    boot.initrd.systemd.services.rollback = {
+      description = "Wipe and rollback ephemeral BTRFS root subvolume to a pristine state";
+      wantedBy = ["initrd.target"];
 
-      if [ -d /tmpdir/root ]; then
-          echo "Safely clearing nested subvolumes inside root..."
-          # Using awk ensures variable spacing in column 9 won't break the string target
-          btrfs subvolume list -o /tmpdir/root | awk '{print $9}' | while read -r subvolume; do
-              btrfs subvolume delete "/tmpdir/$subvolume"
-          done
+      after = ["initrd-root-device.target" "local-fs-pre.target"];
+      before = ["sysroot.mount"];
 
-          echo "Wiping ephemeral root subvolume..."
-          btrfs subvolume delete /tmpdir/root
-      fi
+      unitConfig.DefaultDependencies = "no";
+      serviceConfig.Type = "oneshot";
 
-      echo "Restoring pristine root from snapshot..."
-      btrfs subvolume snapshot /tmpdir/root-blank /tmpdir/root
+      script = ''
+        mkdir -p /tmpdir
+        mount -t btrfs /dev/sda4 /tmpdir
 
-      umount /tmpdir
-    '';
+        if [ -d /tmpdir/root ]; then
+            echo "Safely clearing nested subvolumes inside root..."
+            # Clean up potential nested subvolumes
+            btrfs subvolume list -o /tmpdir/root | awk '{print $9}' | while read -r subvolume; do
+                btrfs subvolume delete "/tmpdir/$subvolume"
+            done
+
+            echo "Wiping ephemeral root subvolume..."
+            btrfs subvolume delete /tmpdir/root
+        fi
+
+        echo "Restoring pristine root from snapshot..."
+        btrfs subvolume snapshot /tmpdir/root-blank /tmpdir/root
+
+        umount /tmpdir
+      '';
+    };
   };
 }
