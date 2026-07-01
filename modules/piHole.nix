@@ -3,12 +3,18 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.piHole = {config, ...}: {
+  flake.nixosModules.piHole = {
+    config,
+    pkgs,
+    ...
+  }: {
     services.pihole-ftl = {
       enable = true;
       openFirewallDNS = true;
       openFirewallDHCP = true;
+      openFirewallWebserver = true;
       settings = {
+        password = "pimiseenleukejongen";
         dns = {
           upstreams = ["127.0.0.1#5335"];
           listeningMode = "all";
@@ -49,7 +55,7 @@
           end = "192.168.178.254";
           router = config.admin.routerIp;
           leaseTime = "6h";
-          ipv6 = true;
+          ipv6 = false;
           rapidCommit = true;
         };
         ntp = {
@@ -98,6 +104,10 @@
       hostName = "0.0.0.0";
       ports = ["80r" "443s"];
     };
-    networking.firewall.allowedTCPPorts = [80 443];
+    environment.systemPackages = with pkgs; [
+      pihole-ftl
+      pihole-web
+      pihole
+    ];
   };
 }
