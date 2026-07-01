@@ -10,7 +10,7 @@
         containers.homeassistant = {
           image = "ghcr.io/home-assistant/home-assistant:stable";
           volumes = [
-            "home-assistant-config:/config"
+            "/var/lib/homeassistant:/config"
             "/run/dbus:/run/dbus:ro"
           ];
           environment = {
@@ -23,6 +23,9 @@
         };
       };
     };
-    networking.firewall.allowedTCPPorts = [8123];
+    networking.firewall = {
+      allowedTCPPorts = [8123 1400];
+      allowedUDPPorts = [5353 1900];
+    };
   };
 }
