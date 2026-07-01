@@ -7,7 +7,7 @@
     users.users.${config.admin.name} = {
       isNormalUser = true;
       hashedPassword = config.admin.hashedPassword;
-      extraGroups = ["wheel"];
+      extraGroups = ["wheel" "docker"];
     };
   };
 }
