@@ -95,7 +95,7 @@
     };
     services.pihole-web = {
       enable = true;
-      hostName = config.hosts.${config.settings.hostName}.ipAddr;
+      hostName = "0.0.0.0";
       ports = ["80r" "443s"];
     };
   };
