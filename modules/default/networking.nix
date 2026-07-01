@@ -5,13 +5,13 @@
 }: {
   flake.nixosModules.networking = {config, ...}: {
     networking = {
-      hostName = config.hosts.${config.networking.hostName}.hostName;
+      hostName = config.hosts.${config.settings.hostName}.hostName;
       useDHCP = false;
       networkmanager.enable = false;
       defaultGateway = config.admin.routerIp;
       interfaces.ens18.ipv4.addresses = [
         {
-          address = config.hosts.${config.networking.hostName}.ipAddr;
+          address = config.hosts.${config.settings.hostName}.ipAddr;
           prefixLength = 24;
         }
       ];
@@ -20,6 +20,7 @@
         trustedInterfaces = ["tailscale0"];
       };
     };
+
     services = {
       openssh.enable = true;
       tailscale = {

@@ -20,10 +20,16 @@
     };
   in {
     options = {
+      settings.hostName = lib.mkOption {
+        type = lib.types.str;
+        description = "hostname";
+      };
+
       hosts = lib.mkOption {
         type = lib.types.attrsOf hostSettings;
         default = {};
       };
+
       disks = {
         drive1 = lib.mkOption {type = lib.types.str;};
         drive2 = lib.mkOption {type = lib.types.str;};
@@ -32,6 +38,7 @@
           default = "/media";
         };
       };
+
       admin = {
         name = lib.mkOption {
           type = lib.types.str;
@@ -74,17 +81,19 @@
           ipAddr = "192.168.178.5";
         };
       };
+
       disks = {
         drive1 = "/dev/sda";
         drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
       };
+
       admin = {
         hashedPassword = "$6$sIfjCM5qq91ch98l$ZPL9I/xe22Xdpe60QLDz3wStTxDqKIkvz8/KRh7YKOFN.d6YroSuQR.xIao0Zdg5u4XnBcurPd4i5RXtm1.qw1";
         gitHubAddr = "github.com/pimkoter/flakeserver";
       };
 
       networking.nameservers = let
-        allHosts = builtins.attrValues config.hosts; # ← fixed
+        allHosts = builtins.attrValues config.hosts;
         piHoleHost = lib.findFirst (h: h.isPiHole) null allHosts;
       in [
         (

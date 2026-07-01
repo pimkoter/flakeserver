@@ -3,25 +3,24 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.disko = {config, ...}: {
+  flake.nixosModules.disko = {
     imports = [inputs.disko.nixosModules.disko];
+
+    fileSystems."/".neededForBoot = true;
     fileSystems."/nix".neededForBoot = true;
     fileSystems."/persistent".neededForBoot = true;
 
-    disko.devices.nodev."/" = {
-      fsType = "tmpfs";
-      mountOptions = ["size=25%" "mode=755"];
-    };
-
     disko.devices.disk.main = {
-      device = config.disks.drive1; # ← was hardcoded /dev/sda
+      device = "/dev/sda";
       type = "disk";
       content.type = "gpt";
+
       content.partitions.boot = {
         name = "boot";
         size = "1M";
         type = "EF02";
       };
+
       content.partitions.esp = {
         name = "ESP";
         size = "1G";
@@ -32,6 +31,7 @@
           mountpoint = "/boot";
         };
       };
+
       content.partitions.swap = {
         size = "4G";
         content = {
@@ -39,20 +39,32 @@
           resumeDevice = true;
         };
       };
+
       content.partitions.root = {
         name = "root";
         size = "100%";
         content = {
           type = "btrfs";
           extraArgs = ["-f"];
+
           subvolumes = {
-            "/persistent" = {
-              mountOptions = ["subvol=persistent" "noatime"];
-              mountpoint = "/persistent";
+            "/" = {
+              mountOptions = ["subvol=root" "noatime" "compress=zstd"];
+              mountpoint = "/";
             };
+
+            "/root-blank" = {
+              mountOptions = ["subvol=root-blank" "noatime" "compress=zstd"];
+            };
+
             "/nix" = {
-              mountOptions = ["subvol=nix" "noatime"];
+              mountOptions = ["subvol=nix" "noatime" "compress=zstd"];
               mountpoint = "/nix";
+            };
+
+            "/persistent" = {
+              mountOptions = ["subvol=persistent" "noatime" "compress=zstd"];
+              mountpoint = "/persistent";
             };
           };
         };

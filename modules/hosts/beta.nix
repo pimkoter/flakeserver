@@ -7,6 +7,7 @@
 in {
   flake.nixosConfigurations.${name} = inputs.nixpkgs.lib.nixosSystem {
     modules = with self.nixosModules; [
+      {settings.hostName = name;}
       # Default modules
       autoUpgrade
       boot
@@ -20,9 +21,8 @@ in {
       settings
 
       # Host specific modules
-      vaultWarden
       immich
-      drive
+      drive2
     ];
   };
 }
