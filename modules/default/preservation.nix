@@ -27,7 +27,7 @@
           "/etc/machine-id"
         ];
 
-        users.serveradmin = {
+        users.pim = {
           directories = [
             "downloads"
             ".config/containers"
