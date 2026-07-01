@@ -25,16 +25,16 @@ sudo nix run github:nix-community/disko -- --mode disko --flake .#"$machine_name
 
 # 4. Create the pristine Btrfs rollback snapshot required by preservation.nix
 echo "📦 Initializing the pristine root snapshot template..."
-mkdir -p /tmp/btrfs-root
-# Mount the root of the Btrfs filesystem (subvolid=5) to a temporary directory
-sudo mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/disk-main-root /tmp/btrfs-root
+mkdir -p /tmp/btrfs-raw-root
+# Mount the parent Btrfs directory tree (subvol=/)
+sudo mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/disk-main-root /tmp/btrfs-raw-root
 
-# Create the blank snapshot tracking the clean root state Disko just deployed
-sudo btrfs subvolume snapshot /tmp/btrfs-root/root /tmp/btrfs-root/root-blank
+# Create 'root-blank' using the active, clean /mnt directory populated by Disko as the source
+sudo btrfs subvolume snapshot /mnt /tmp/btrfs-raw-root/root-blank
 
-# Clean up temporary snapshot mount point
-sudo umount /tmp/btrfs-root
-rmdir /tmp/btrfs-root
+# Clean up our temporary layout mount
+sudo umount /tmp/btrfs-raw-root
+rmdir /tmp/btrfs-raw-root
 
 # 5. Fix empty machine-id bug that crashes systemd-boot installation
 echo "🆔 Pre-generating system machine-id to prevent bootloader errors..."
