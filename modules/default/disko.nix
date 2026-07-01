@@ -54,7 +54,6 @@
             };
 
             "/root-blank" = {
-              mountOptions = ["subvol=root-blank" "noatime" "compress=zstd"];
               mountpoint = null;
             };
 
