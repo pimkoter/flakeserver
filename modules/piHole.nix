@@ -14,7 +14,19 @@
       openFirewallDHCP = true;
       openFirewallWebserver = true;
       settings = {
+        api = {
+          active = true;
+          allowedOrigins = ["http://192.168.178.2" "https://192.168.178.2"];
+        };
+
+        webserver = {
+          active = true;
+          port = "443s";
+          domain = "192.168.178.2";
+        };
+
         password = "pimiseenleukejongen";
+
         dns = {
           upstreams = ["127.0.0.1#5335"];
           listeningMode = "all";
