@@ -25,10 +25,9 @@ sudo nix run github:nix-community/disko -- --mode disko --flake .#"$machine_name
 
 # 4. Create the pristine Btrfs rollback snapshot required by preservation.nix
 echo "📦 Initializing the pristine root snapshot template..."
-# Based on your updated disko.nix, /dev/sda3 is now your root Btrfs partition
-# (Since sda1 is ESP, sda2 is Swap, and sda3 takes the remaining space)
 mkdir -p /tmp/raw-btrfs
-sudo mount -t btrfs /dev/sda3 /tmp/raw-btrfs
+# FIXED: Using predictable partlabel path instead of brittle /dev/sda3 node
+sudo mount -t btrfs /dev/disk/by-partlabel/disk-main-root /tmp/raw-btrfs
 sudo btrfs subvolume snapshot /tmp/raw-btrfs/root /tmp/raw-btrfs/root-blank
 sudo umount /tmp/raw-btrfs
 rmdir /tmp/raw-btrfs
