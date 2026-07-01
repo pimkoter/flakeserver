@@ -19,6 +19,9 @@
         name = "boot";
         size = "1M";
         type = "EF02";
+        content = {
+          type = "raw";
+        };
       };
 
       content.partitions.esp = {
