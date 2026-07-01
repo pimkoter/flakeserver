@@ -6,6 +6,7 @@
   flake.nixosModules.piHole = {
     config,
     pkgs,
+    lib,
     ...
   }: {
     services = {
@@ -25,7 +26,7 @@
 
           webserver = {
             active = true;
-            port = "443s";
+            port = lib.mkForce "443s";
             domain = "192.168.178.2";
           };
 
