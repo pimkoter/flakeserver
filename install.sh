@@ -11,15 +11,10 @@ fi
 
 echo "Starting installation for machine $machine_name"
 
-# Installatie commando
-sudo nix --extra-experimental-features "nix-command flakes" \
-  run 'github:nix-community/disko/latest#disko-install' -- \
-  --flake ".#$machine_name" \
-  --disk main /dev/sda
+sudo nix run github:nix-community/disko -- ---mode disko --flake .#{machine_name}
 
 echo "System install successful!"
 
-# Aftellen van 10 naar 1
 for i in {10..1}; do
   echo "System restarts in $i seconds..."
   sleep 1
