@@ -12,7 +12,7 @@
     services = {
       pihole-web = {
         enable = true;
-        ports = lib.mkDefault ["80r" "443s"];
+        ports = ["80r" "443s"];
       };
 
       pihole-ftl = {
@@ -29,7 +29,7 @@
 
           webserver = {
             active = true;
-            port = "80";
+            port = lib.mkForce "80";
             domain = "192.168.178.2";
             api.pwhash = "$BALLOON-SHA256$v=1$s=1024,t=32$38d54e5d9fb97f6bdeb5887d3e990cd5626f0b4b2c6b57bcd43c044d5435135052a0e0d74b0522588869a46bfc2d4e7d7cb558b0ec3bf73b073ca85c4e77dbda";
           };
