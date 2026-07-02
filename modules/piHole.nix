@@ -22,13 +22,15 @@
           api = {
             active = true;
             allowedOrigins = ["http://192.168.178.2" "https://192.168.178.2"];
-            password = "pimiseenleukejongen";
           };
 
           webserver = {
             active = true;
             port = lib.mkForce "443s";
             domain = lib.mkForce "192.168.178.2";
+            api = {
+              password = "pimiseenleukejongen";
+            };
           };
 
           dns = {
