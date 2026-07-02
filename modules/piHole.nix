@@ -12,7 +12,7 @@
     services = {
       pihole-web = {
         enable = true;
-        ports = ["80r" "443s"];
+        ports = lib.mkDefault ["80r" "443s"];
       };
 
       pihole-ftl = {
