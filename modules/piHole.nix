@@ -12,12 +12,15 @@
     services = {
       pihole-web = {
         enable = true;
+        ports = ["80r" "443s"];
       };
+
       pihole-ftl = {
         enable = true;
         openFirewallDNS = true;
         openFirewallDHCP = true;
         openFirewallWebserver = true;
+
         settings = {
           api = {
             active = true;
@@ -26,11 +29,9 @@
 
           webserver = {
             active = true;
-            port = lib.mkForce "443s";
-            domain = lib.mkForce "192.168.178.2";
-            api = {
-              password = "pimiseenleukejongen";
-            };
+            port = "80";
+            domain = "192.168.178.2";
+            api.pwhash = "";
           };
 
           dns = {
@@ -118,9 +119,8 @@
         lists = [];
       };
     };
+    systemd.services.pihole-ftl.serviceConfig.EnvironmentFile = "/var/lib/pihole/admin_password.txt";
     environment.systemPackages = with pkgs; [
-      pihole-ftl
-      pihole-web
       pihole
     ];
   };
