@@ -9,6 +9,7 @@
     lib,
     ...
   }: {
+    misc.readOnly = false;
     services = {
       pihole-web = {
         enable = true;
