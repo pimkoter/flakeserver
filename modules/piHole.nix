@@ -9,7 +9,6 @@
     lib,
     ...
   }: {
-    misc.readOnly = false;
     services = {
       pihole-web = {
         enable = true;
@@ -21,6 +20,7 @@
         openFirewallDNS = true;
         openFirewallDHCP = true;
         openFirewallWebserver = true;
+        misc.readOnly = false;
 
         settings = {
           api = {
