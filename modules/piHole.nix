@@ -45,7 +45,7 @@
             localise = true;
             showDNSSEC = true;
             domain = {
-              name = "puber";
+              name = "home";
               local = true;
             };
             cache = {
@@ -122,6 +122,12 @@
     };
     environment.systemPackages = with pkgs; [
       pihole
+      pihole-ftl
+    ];
+
+    systemd.tmpfiles.rules = [
+      # Silences a redundant error
+      "f /etc/pihole/versions 0644 pihole pihole - -"
     ];
   };
 }
