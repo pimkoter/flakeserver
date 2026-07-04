@@ -20,9 +20,9 @@
         openFirewallDNS = true;
         openFirewallDHCP = true;
         openFirewallWebserver = true;
-        misc.readOnly = false;
 
         settings = {
+          misc.readOnly = false;
           api = {
             active = true;
             allowedOrigins = ["http://192.168.178.2" "https://192.168.178.2"];
