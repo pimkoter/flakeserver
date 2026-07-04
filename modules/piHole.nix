@@ -22,7 +22,7 @@
         openFirewallWebserver = true;
 
         settings = {
-          misc.readOnly = false;
+          misc.readOnly = true; # <-- Change to false when setting a new password
           api = {
             active = true;
             allowedOrigins = ["http://192.168.178.2" "https://192.168.178.2"];
@@ -32,7 +32,7 @@
             active = true;
             port = lib.mkForce "80";
             domain = lib.mkForce "192.168.178.2";
-            api.pwhash = "$BALLOON-SHA256$v=1$s=1024,t=32$JmUiy69EGfJqy1/E9/o1Og==$KYi4l+qD/01Gj/J85mF9Ypg61eh2FylMYTVKqksDD/o=";
+            api.pwhash = "$BALLOON-SHA256$v=1$s=1024,t=32$JmUiy69EGfJqy1/E9/o1Og==$KYi4l+qD/01Gj/J85mF9Ypg61eh2FylMYTVKqksDD/o="; # <-- to change: set misc.readOnly =false; run sudo pihole setpassword on the server, run sudo pihole-FTL --config webserver.api.pwhash and copy to api.pwhash !!DON'T FORGET TO SET MISC.READONLY TO FALSE AGAIN
           };
 
           dns = {
