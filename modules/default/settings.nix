@@ -31,8 +31,8 @@
       };
 
       disks = {
-        drive1 = lib.mkOption {type = lib.types.str;};
-        drive2 = lib.mkOption {type = lib.types.str;};
+        system = lib.mkOption {type = lib.types.str;};
+        media = lib.mkOption {type = lib.types.str;};
         mntPoint = lib.mkOption {
           type = lib.types.str;
           default = "/media";
@@ -83,8 +83,8 @@
       };
 
       disks = {
-        drive1 = "/dev/sda";
-        drive2 = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
+        system = "/dev/sda";
+        media = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
       };
 
       admin = {
