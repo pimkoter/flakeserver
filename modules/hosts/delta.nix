@@ -9,13 +9,11 @@ in {
     modules = with self.nixosModules; [
       {settings.hostName = name;}
       # Default modules
-      autoUpgrade
       boot
       disko
       miscellaneous
       networking
       pkgs
-      preservation
       shell
       users
       settings
