@@ -1,67 +1,68 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=========================================="
-echo "          NixOS Flake Installer           "
-echo "=========================================="
+DISK_DEV="/dev/nvme0n1" # The drive to wipe and install to
+TARGET_HOST="${1:-}"
 
-# 1. Prompt for machine name
-read -p "Enter target machine name (e.g., beta): " machine_name
-
-if [[ -z "$machine_name" ]]; then
-    echo "❌ Error: Machine name cannot be empty."
-    exit 1
+# Detect if we are inside the local git repository, otherwise fallback to GitHub
+if [ -d "./.git" ] || [ -d "../.git" ]; then
+  echo "Local git repository detected. Evaluating local files..."
+  FLAKE_REPO="."
+else
+  FLAKE_REPO="github:pimkoter/flakeserver"
 fi
 
-echo "🚀 Beginning deployment process for: $machine_name"
+# If no hostname was passed as an argument, fetch them from the flake and ask
+if [ -z "$TARGET_HOST" ]; then
+  echo "Fetching available host configurations from $FLAKE_REPO..."
+  
+  # Added --refresh to bypass aggressive Nix flake caching
+  MAPFILE=()
+  while IFS= read -r line; do
+    if [ -n "$line" ]; then
+      MAPFILE+=("$line")
+    fi
+  done < <(nix eval --extra-experimental-features "nix-command flakes" --refresh --raw "${FLAKE_REPO}#nixosConfigurations" --apply "attrs: builtins.concatStringsSep \"\n\" (builtins.attrNames attrs)" 2>/dev/null)
 
-# 2. Reset mounts from any previous failed runs
-echo "🔄 Cleaning up any existing mount points..."
-sudo umount -R /mnt 2>/dev/null || true
+  if [ ${#MAPFILE[@]} -eq 0 ]; then
+    echo "Error: No nixosConfigurations found in $FLAKE_REPO."
+    echo "Tip: If testing locally, make sure your files are staged in git: git add ."
+    exit 1
+  fi
 
-# 3. Run Disko partitioning tool
-echo "💾 Partitioning and formatting disk arrays via Disko..."
-sudo nix run github:nix-community/disko -- --mode disko --flake .#"$machine_name"
+  echo ""
+  echo "Please select a host configuration to install:"
+  select host in "${MAPFILE[@]}"; do
+    if [ -n "$host" ]; then
+      TARGET_HOST="$host"
+      break
+    else
+      echo "Invalid selection. Please try again."
+    fi
+  done
+fi
 
-# 4. Create the pristine Btrfs rollback snapshot required by preservation.nix
-echo "📦 Initializing the pristine root snapshot template..."
-mkdir -p /tmp/btrfs-raw-root
-# Mount the parent Btrfs directory tree (subvol=/)
-sudo mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/disk-main-root /tmp/btrfs-raw-root
+echo ""
+echo "===================================================="
+echo " Target Host: $TARGET_HOST"
+echo " Target Disk: $DISK_DEV (ALL DATA WILL BE WIPED)"
+echo "===================================================="
+read -p "Proceed with installation? (y/N): " confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Installation aborted."
+  exit 0
+fi
 
-# Create 'root-blank' using the active, clean /mnt directory populated by Disko as the source
-sudo btrfs subvolume snapshot /mnt /tmp/btrfs-raw-root/root-blank
+echo "=== 1. Partitioning and formatting $DISK_DEV ==="
+nix run github:nix-community/disko -- --mode disko --flake "${FLAKE_REPO}#${TARGET_HOST}"
 
-# Clean up our temporary layout mount
-sudo umount /tmp/btrfs-raw-root
-rmdir /tmp/btrfs-raw-root
+echo "=== 2. Creating the pristine blank snapshot ==="
+mkdir -p /tmp/btrfs_base
+mount /dev/disk/by-partlabel/disk-main-root /tmp/btrfs_base
+btrfs subvolume snapshot /tmp/btrfs_base/@root /tmp/btrfs_base/@root-blank
+umount /tmp/btrfs_base
 
-# 5. Fix empty machine-id bug that crashes systemd-boot installation
-echo "🆔 Pre-generating system machine-id to prevent bootloader errors..."
-sudo mkdir -p /mnt/persistent/etc
-dbus-uuidgen | sudo tee /mnt/persistent/etc/machine-id > /dev/null
+echo "=== 3. Launching installation for host: $TARGET_HOST ==="
+nixos-install --flake "${FLAKE_REPO}#${TARGET_HOST}" --no-root-passwd
 
-sudo mkdir -p /mnt/etc
-sudo cp /mnt/persistent/etc/machine-id /mnt/etc/machine-id
-
-# 6. Redirect compilation cache space away from RAM onto the newly formatted drive
-echo "📈 Diverting Nix temporary build path to physical storage..."
-sudo mkdir -p /mnt/nix/tmp
-export TMPDIR=/mnt/nix/tmp
-
-# 7. Execute the final system setup profile closure
-echo "⚙️  Running nixos-install..."
-sudo nixos-install --flake .#"$machine_name"
-
-echo "=========================================="
-echo " 🎉 NixOS Installation Successful!       "
-echo "=========================================="
-
-# 8. Safe reboot countdown loop
-for i in {10..1}; do
-    echo "🔄 System restarts in $i seconds... (Ctrl+C to abort)"
-    sleep 1
-done
-
-echo "👋 Rebooting into your new system now..."
-sudo reboot
+echo "=== Automation Complete for $TARGET_HOST! You can now run: reboot ==="
