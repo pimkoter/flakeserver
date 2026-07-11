@@ -18,6 +18,7 @@
       "d '${base}/config/qbittorrent' 0755 1000 1000 -"
       "d '${base}/config/bazarr' 0755 1000 1000 -"
       "d '${base}/config/seerr' 0755 1000 1000 -"
+      "d '${base}/config/lidarr' 0755 1000 1000 -"
     ];
 
     virtualisation.oci-containers = {
