@@ -1,68 +1,65 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
-DISK_DEV="/dev/nvme0n1" # The drive to wipe and install to
-TARGET_HOST="${1:-}"
+echo "========================================================"
+echo " Gathering available VM profiles from Flake..."
+echo "========================================================"
 
-# Detect if we are inside the local git repository, otherwise fallback to GitHub
-if [ -d "./.git" ] || [ -d "../.git" ]; then
-  echo "Local git repository detected. Evaluating local files..."
-  FLAKE_REPO="."
-else
-  FLAKE_REPO="github:pimkoter/flakeserver"
+# 1. Ensure changes are staged so Nix can read them properly
+git add -A 2>/dev/null || true
+
+# 2. Dynamically extract the host keys and filter out the 'NAME' blueprint
+echo "--> Reading flake outputs..."
+AVAILABLE_HOSTS=($(nix eval --experimental-features "nix-command flakes" .#nixosConfigurations --apply "builtins.attrNames" --json |
+  jq -r '.[] | select(. != "NAME")'))
+
+# 3. Check if we found any valid target hosts
+if [ ${#AVAILABLE_HOSTS[@]} -eq 0 ]; then
+  echo "❌ Error: No deployable NixOS configurations found in this Flake (excluding blueprints)."
+  exit 1
 fi
 
-# If no hostname was passed as an argument, fetch them from the flake and ask
-if [ -z "$TARGET_HOST" ]; then
-  echo "Fetching available host configurations from $FLAKE_REPO..."
-  
-  # Added --refresh to bypass aggressive Nix flake caching
-  MAPFILE=()
-  while IFS= read -r line; do
-    if [ -n "$line" ]; then
-      MAPFILE+=("$line")
-    fi
-  done < <(nix eval --extra-experimental-features "nix-command flakes" --refresh --raw "${FLAKE_REPO}#nixosConfigurations" --apply "attrs: builtins.concatStringsSep \"\n\" (builtins.attrNames attrs)" 2>/dev/null)
-
-  if [ ${#MAPFILE[@]} -eq 0 ]; then
-    echo "Error: No nixosConfigurations found in $FLAKE_REPO."
-    echo "Tip: If testing locally, make sure your files are staged in git: git add ."
-    exit 1
-  fi
-
-  echo ""
-  echo "Please select a host configuration to install:"
-  select host in "${MAPFILE[@]}"; do
-    if [ -n "$host" ]; then
-      TARGET_HOST="$host"
-      break
-    else
-      echo "Invalid selection. Please try again."
-    fi
-  done
-fi
-
+# 4. Present an interactive menu to the user
 echo ""
-echo "===================================================="
-echo " Target Host: $TARGET_HOST"
-echo " Target Disk: $DISK_DEV (ALL DATA WILL BE WIPED)"
-echo "===================================================="
-read -p "Proceed with installation? (y/N): " confirm
-if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-  echo "Installation aborted."
-  exit 0
+echo "Select the host configuration to deploy onto /dev/sda:"
+select TARGET_HOST in "${AVAILABLE_HOSTS[@]}"; do
+  if [ -n "${TARGET_HOST}" ]; then
+    echo "--> Selected target: ${TARGET_HOST}"
+    break
+  else
+    echo "Invalid selection. Please choose a number from the list."
+  fi
+done
+
+echo "========================================================"
+echo " Preparing installation for: ${TARGET_HOST}"
+echo "========================================================"
+
+# 5. Locate and run disko using your configuration layout
+echo "--> Locating disko configuration file..."
+# Find any file ending in disko.nix or matching a disko pattern
+DISKO_PATH=$(find . -name "*disko.nix" -print -quit)
+
+if [ -z "$DISKO_PATH" ]; then
+  echo "❌ Error: Could not find a disko configuration file in this repository."
+  exit 1
 fi
 
-echo "=== 1. Partitioning and formatting $DISK_DEV ==="
-nix run github:nix-community/disko -- --mode disko --flake "${FLAKE_REPO}#${TARGET_HOST}"
+echo "--> Found layout at: ${DISKO_PATH}"
+echo "--> Partitioning and formatting /dev/sda with Disko..."
+sudo nix --experimental-features "nix-command flakes" \
+  run github:nix-community/disko/latest -- \
+  --mode disko "$DISKO_PATH"
+# 6. Copy repository context to the target file system mount
+echo "--> Syncing configuration files to /mnt..."
+sudo mkdir -p /mnt/etc/nixos
+sudo cp -r . /mnt/etc/nixos
 
-echo "=== 2. Creating the pristine blank snapshot ==="
-mkdir -p /tmp/btrfs_base
-mount /dev/disk/by-partlabel/disk-main-root /tmp/btrfs_base
-btrfs subvolume snapshot /tmp/btrfs_base/@root /tmp/btrfs_base/@root-blank
-umount /tmp/btrfs_base
+# 7. Complete the final install hook passing the selected profile name
+echo "--> Running nixos-install..."
+sudo nixos-install --flake "/mnt/etc/nixos#${TARGET_HOST}" --no-root-passwd
 
-echo "=== 3. Launching installation for host: $TARGET_HOST ==="
-nixos-install --flake "${FLAKE_REPO}#${TARGET_HOST}" --no-root-passwd
-
-echo "=== Automation Complete for $TARGET_HOST! You can now run: reboot ==="
+echo "========================================================"
+echo " Setup complete for ${TARGET_HOST}! Ready to reboot. "
+echo "========================================================"
