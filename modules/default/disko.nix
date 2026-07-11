@@ -1,9 +1,5 @@
 {
-  self,
-  inputs,
-  ...
-}: {
-  flake.nixosModules.disko = {
+  flake.nixosModules.disko = {...}: {
     disko.devices = {
       disk = {
         sda = {
