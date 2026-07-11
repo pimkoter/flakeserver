@@ -32,22 +32,21 @@ select TARGET_HOST in "${AVAILABLE_HOSTS[@]}"; do
 done
 
 echo "========================================================"
-echo " Running disko-install for: ${TARGET_HOST}"
+echo " Formatting and Installing: ${TARGET_HOST}"
 echo "========================================================"
 
-# 1. Manually trigger the partition/mount phase first so /mnt exists
-echo "--> Partitioning disk..."
+# 1. Partition and mount /dev/sda to /mnt
+echo "--> Running Disko partitioning..."
 sudo nix run 'github:nix-community/disko/latest#disko' -- --mode disko --flake ".#${TARGET_HOST}"
 
-# 2. Create a temporary folder on the physical disk
-sudo mkdir -p /mnt/tmp
+# 2. Copy your configuration repository into the target so it's preserved after boot
+echo "--> Syncing configuration files to /mnt/etc/nixos..."
+sudo mkdir -p /mnt/etc/nixos
+sudo cp -r . /mnt/etc/nixos
 
-# 3. Force Nix to use the physical disk for its build cache
+# 3. Use standard nixos-install (Builds directly on your hard drive)
 echo "--> Building and installing NixOS profile..."
-sudo TMPDIR=/mnt/tmp nix run 'github:nix-community/disko/latest#disko-install' -- \
-  --flake ".#${TARGET_HOST}" \
-  --disk sda /dev/sda \
-  --write-efi-boot-entries
+sudo nixos-install --flake "/mnt/etc/nixos#${TARGET_HOST}" --no-root-passwd
 
 echo "========================================================"
 echo " Setup complete for ${TARGET_HOST}! Ready to reboot. "
