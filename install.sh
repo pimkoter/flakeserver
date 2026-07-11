@@ -37,7 +37,7 @@ echo "========================================================"
 
 # 1. Manually trigger the partition/mount phase first so /mnt exists
 echo "--> Partitioning disk..."
-sudo nix run 'github:nix-community/disko/latest#disko' -- --mode disko .#${TARGET_HOST}
+sudo nix run 'github:nix-community/disko/latest#disko' -- --mode disko --flake ".#${TARGET_HOST}"
 
 # 2. Create a temporary folder on the physical disk
 sudo mkdir -p /mnt/tmp
