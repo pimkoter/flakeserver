@@ -35,11 +35,16 @@ echo "========================================================"
 echo " Running disko-install for: ${TARGET_HOST}"
 echo "========================================================"
 
-# 4. Trigger disko-install
-#    --flake "." specify the local directory flake layout
-#    --disk "sda" targets the attribute key name you defined in disko.devices.disk.sda
-#    /dev/sda passes the actual physical target drive
-sudo nix run 'github:nix-community/disko/latest#disko-install' -- \
+# 1. Manually trigger the partition/mount phase first so /mnt exists
+echo "--> Partitioning disk..."
+sudo nix run 'github:nix-community/disko/latest#disko' -- --mode disko .#${TARGET_HOST}
+
+# 2. Create a temporary folder on the physical disk
+sudo mkdir -p /mnt/tmp
+
+# 3. Force Nix to use the physical disk for its build cache
+echo "--> Building and installing NixOS profile..."
+sudo TMPDIR=/mnt/tmp nix run 'github:nix-community/disko/latest#disko-install' -- \
   --flake ".#${TARGET_HOST}" \
   --disk sda /dev/sda \
   --write-efi-boot-entries
