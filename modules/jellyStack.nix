@@ -149,88 +149,88 @@
             };
           };
         };
+      };
 
-        services.declarr = {
-          enable = true;
-          config = {
-            prowlarr = {
-              url = "http://prowlarr:9696";
-              apiKey = secrets.prowlarrKey;
-              indexers = {
-                "1337x" = {
-                  enable = true;
-                  implementation = "Torznab";
-                  config = {
-                    url = "https://1337x.to";
-                  };
-                };
-                "YTS" = {
-                  enable = true;
-                  implementation = "Torznab";
-                  config = {
-                    url = "https://yts.mx";
-                  };
-                };
-                "EZTV" = {
-                  enable = true;
-                  implementation = "Torznab";
-                  config = {
-                    url = "https://eztv.re";
-                  };
-                };
-                "LimeTorrents" = {
-                  enable = true;
-                  implementation = "Torznab";
-                  config = {
-                    url = "https://www.limetorrents.info";
-                  };
-                };
-              };
-            };
-            radarr = {
-              url = "http://radarr:7878";
-              apiKey = secrets.radarrKey;
-              rootFolders = [{path = "/data/media/movies";}];
-              downloadClient."qBittorrent" = {
+      services.declarr = {
+        enable = true;
+        config = {
+          prowlarr = {
+            url = "http://prowlarr:9696";
+            apiKey = secrets.prowlarrKey;
+            indexers = {
+              "1337x" = {
                 enable = true;
-                fields = {
-                  host = "qbittorrent";
-                  port = 8080;
+                implementation = "Torznab";
+                config = {
+                  url = "https://1337x.to";
                 };
               };
-            };
-            sonarr = {
-              url = "http://sonarr:8989";
-              apiKey = secrets.sonarrKey;
-              rootFolders = [{path = "/data/media/shows";}];
-              downloadClient."qBittorrent" = {
+              "YTS" = {
                 enable = true;
-                fields = {
-                  host = "qbittorrent";
-                  port = 8080;
+                implementation = "Torznab";
+                config = {
+                  url = "https://yts.mx";
                 };
               };
-            };
-            lidarr = {
-              url = "http://lidarr:8686";
-              apiKey = secrets.lidarrKey;
-              rootFolders = [{path = "/data/media/music";}];
-              downloadClient."qBittorrent" = {
+              "EZTV" = {
                 enable = true;
-                fields = {
-                  host = "qbittorrent";
-                  port = 8080;
+                implementation = "Torznab";
+                config = {
+                  url = "https://eztv.re";
+                };
+              };
+              "LimeTorrents" = {
+                enable = true;
+                implementation = "Torznab";
+                config = {
+                  url = "https://www.limetorrents.info";
                 };
               };
             };
-            jellyseerr = {
-              url = "http://seerr:5055";
-              apiKey = secrets.seerrKey;
+          };
+          radarr = {
+            url = "http://radarr:7878";
+            apiKey = secrets.radarrKey;
+            rootFolders = [{path = "/data/media/movies";}];
+            downloadClient."qBittorrent" = {
+              enable = true;
+              fields = {
+                host = "qbittorrent";
+                port = 8080;
+              };
             };
+          };
+          sonarr = {
+            url = "http://sonarr:8989";
+            apiKey = secrets.sonarrKey;
+            rootFolders = [{path = "/data/media/shows";}];
+            downloadClient."qBittorrent" = {
+              enable = true;
+              fields = {
+                host = "qbittorrent";
+                port = 8080;
+              };
+            };
+          };
+          lidarr = {
+            url = "http://lidarr:8686";
+            apiKey = secrets.lidarrKey;
+            rootFolders = [{path = "/data/media/music";}];
+            downloadClient."qBittorrent" = {
+              enable = true;
+              fields = {
+                host = "qbittorrent";
+                port = 8080;
+              };
+            };
+          };
+          jellyseerr = {
+            url = "http://seerr:5055";
+            apiKey = secrets.seerrKey;
           };
         };
       };
-      users.users.${config.admin.name}.extraGroups = ["docker"];
     };
+    users.users.${config.admin.name}.extraGroups = ["docker"];
   };
 }
