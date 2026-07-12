@@ -12,46 +12,55 @@ fi
 
 echo "📁 Found media base path at: $BASE_DIR"
 
-# 2. Ensure custom Docker network exists
-echo "🌐 Creating internal Docker bridge network..."
-docker network create jellystack 2>/dev/null || true
-
-# 3. Create secrets folder
+# 2. Create secrets folder
 sudo mkdir -p /etc/jellystack
 
-# 4. Trigger systemd-tmpfiles to create app data folders so configurations can generate
+# 3. Trigger systemd-tmpfiles to create app data folders so configurations can generate
 echo "⚙️  Initializing folder structures..."
 sudo systemd-tmpfiles --create
 
-# 5. Build and apply NixOS configuration once to pull docker images & launch containers
+# 4. Build and apply NixOS configuration once to pull docker images & launch containers
+# Note: Declarr might fail on this first run because secrets.nix is missing/placeholder
 echo "🚀 Performing initial NixOS build to spin up containers..."
-sudo nixos-rebuild switch
+sudo nixos-rebuild switch || echo "⚠️  First rebuild had errors (likely Declarr placeholders), continuing to key extraction..."
 
-echo "⏳ Waiting for Arr services to initialize configurations and generate API keys..."
+echo "⏳ Waiting for services to initialize configurations and generate API keys..."
 sleep 15
 
-# 6. Function to safely extract API keys from container XML configuration files
-get_api_key() {
+# 5. Functions to safely extract API keys from various formats
+get_xml_key() {
   local file="$1"
-  if [ -f "$file" ]; then
-    # Parse XML <ApiKey> value cleanly
-    grep -oP '(?<=<ApiKey>)[^<]+' "$file" || echo ""
-  else
-    echo ""
-  fi
+  [ -f "$file" ] && grep -oP '(?<=<ApiKey>)[^<]+' "$file" || echo ""
+}
+
+get_json_key() {
+  local file="$1"
+  [ -f "$file" ] && grep -oP '(?<="apiKey": ")[^"]+' "$file" || echo ""
+}
+
+get_yaml_key() {
+  local file="$1"
+  [ -f "$file" ] && grep -oP '(?<=apikey: )[^ ]+' "$file" || echo ""
 }
 
 PROWLARR_CONFIG="$BASE_DIR/config/prowlarr/config.xml"
 RADARR_CONFIG="$BASE_DIR/config/radarr/config.xml"
 SONARR_CONFIG="$BASE_DIR/config/sonarr/config.xml"
+LIDARR_CONFIG="$BASE_DIR/config/lidarr/config.xml"
+SEERR_CONFIG="$BASE_DIR/config/seerr/settings.json"
+BAZARR_CONFIG="$BASE_DIR/config/bazarr/config.yaml"
 
 # Wait loop until all keys are ready
 while true; do
-  PROWLARR_KEY=$(get_api_key "$PROWLARR_CONFIG")
-  RADARR_KEY=$(get_api_key "$RADARR_CONFIG")
-  SONARR_KEY=$(get_api_key "$SONARR_CONFIG")
+  PROWLARR_KEY=$(get_xml_key "$PROWLARR_CONFIG")
+  RADARR_KEY=$(get_xml_key "$RADARR_CONFIG")
+  SONARR_KEY=$(get_xml_key "$SONARR_CONFIG")
+  LIDARR_KEY=$(get_xml_key "$LIDARR_CONFIG")
+  SEERR_KEY=$(get_json_key "$SEERR_CONFIG")
+  BAZARR_KEY=$(get_yaml_key "$BAZARR_CONFIG")
 
-  if [ -n "$PROWLARR_KEY" ] && [ -n "$RADARR_KEY" ] && [ -n "$SONARR_KEY" ]; then
+  if [ -n "$PROWLARR_KEY" ] && [ -n "$RADARR_KEY" ] && [ -n "$SONARR_KEY" ] && \
+     [ -n "$LIDARR_KEY" ] && [ -n "$SEERR_KEY" ] && [ -n "$BAZARR_KEY" ]; then
     echo "✅ All API keys successfully intercepted!"
     break
   fi
@@ -59,18 +68,21 @@ while true; do
   sleep 5
 done
 
-# 7. Write keys out to the untracked secrets file Nix reads from
+# 6. Write keys out to the untracked secrets file Nix reads from
 echo "🔐 Writing API keys securely to /etc/jellystack/secrets.nix..."
 sudo tee /etc/jellystack/secrets.nix >/dev/null <<EOF
 {
   prowlarrKey = "$PROWLARR_KEY";
   radarrKey = "$RADARR_KEY";
   sonarrKey = "$SONARR_KEY";
+  lidarrKey = "$LIDARR_KEY";
+  seerrKey = "$SEERR_KEY";
+  bazarrKey = "$BAZARR_KEY";
 }
 EOF
 
-# 8. Re-run switch so Declarr picks up the freshly populated keys and hooks the stack together
+# 7. Re-run switch so Declarr picks up the freshly populated keys and hooks the stack together
 echo "🔄 Re-running NixOS rebuild to finalize Declarr configurations..."
 sudo nixos-rebuild switch
 
-echo "🎉 Stack is fully online and inter-connected! Access Seerr at http://<VM-IP>:5055"
+echo "🎉 Stack is fully online and inter-connected!"
