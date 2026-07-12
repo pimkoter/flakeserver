@@ -226,7 +226,7 @@
           };
         };
       };
+      users.users.${config.admin.name}.extraGroups = ["docker"];
     };
-    users.users.${config.admin.name}.extraGroups = ["docker"];
   };
 }
