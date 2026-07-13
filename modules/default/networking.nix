@@ -3,7 +3,11 @@
   inputs,
   ...
 }: {
-  flake.nixosModules.networking = {config, ...}: {
+  flake.nixosModules.networking = {
+    config,
+    lib,
+    ...
+  }: {
     networking = {
       hostName = config.hosts.${config.settings.hostName}.hostName;
       useDHCP = false;
@@ -25,7 +29,7 @@
       openssh.enable = true;
       tailscale = {
         enable = true;
-        useRoutingFeatures = "client";
+        useRoutingFeatures = lib.mkDefault "client";
         extraUpFlags = ["--ssh" "--operator=${config.admin.name}"];
       };
       fail2ban = {
