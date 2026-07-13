@@ -46,7 +46,7 @@
         };
       };
 
-      # Automated directory structure creation (Updated for Atomic Moves)
+      # Automated directory structure creation (Aligned with physical structure)
       systemd.tmpfiles.rules = [
         "d '${base}/config/jellyfin' 0755 1000 1000 -"
         "d '${base}/config/prowlarr' 0755 1000 1000 -"
@@ -56,10 +56,10 @@
         "d '${base}/config/bazarr' 0755 1000 1000 -"
         "d '${base}/config/seerr' 0755 1000 1000 -"
         "d '${base}/config/lidarr' 0755 1000 1000 -"
-        "d '${base}/data/media/movies' 0755 1000 1000 -"
-        "d '${base}/data/media/shows' 0755 1000 1000 -"
-        "d '${base}/data/media/music' 0755 1000 1000 -"
-        "d '${base}/data/torrents' 0755 1000 1000 -"
+        "d '${base}/movies' 0755 1000 1000 -"
+        "d '${base}/shows' 0755 1000 1000 -"
+        "d '${base}/music' 0755 1000 1000 -"
+        "d '${base}/downloads' 0755 1000 1000 -"
       ];
 
       virtualisation = {
@@ -71,7 +71,7 @@
               image = "jellyfin/jellyfin:latest";
               volumes = [
                 "${base}/config/jellyfin:/config"
-                "${base}/data/media:/media"
+                "${base}:/media"
               ];
               ports = ["8096:8096"];
               extraOptions = [
@@ -90,7 +90,7 @@
               image = "lscr.io/linuxserver/radarr:latest";
               volumes = [
                 "${base}/config/radarr:/config"
-                "${base}/data:/data" # Atomic Move Mount
+                "${base}:/data" # Atomic Move Mount
               ];
               ports = ["7878:7878"];
               environment = commonEnv;
@@ -100,7 +100,7 @@
               image = "lscr.io/linuxserver/sonarr:latest";
               volumes = [
                 "${base}/config/sonarr:/config"
-                "${base}/data:/data" # Atomic Move Mount
+                "${base}:/data" # Atomic Move Mount
               ];
               ports = ["8989:8989"];
               environment = commonEnv;
@@ -110,7 +110,7 @@
               image = "lscr.io/linuxserver/qbittorrent:latest";
               volumes = [
                 "${base}/config/qbittorrent:/config"
-                "${base}/data/torrents:/data/torrents"
+                "${base}/downloads:/data/downloads"
               ];
               ports = ["8080:8080"];
               environment = commonEnv;
@@ -120,7 +120,7 @@
               image = "lscr.io/linuxserver/bazarr:latest";
               volumes = [
                 "${base}/config/bazarr:/config"
-                "${base}/data/media:/data/media"
+                "${base}:/data"
               ];
               ports = ["6767:6767"];
               environment = commonEnv;
@@ -137,7 +137,7 @@
               image = "lscr.io/linuxserver/lidarr:latest";
               volumes = [
                 "${base}/config/lidarr:/config"
-                "${base}/data:/data" # Atomic Move Mount
+                "${base}:/data" # Atomic Move Mount
               ];
               ports = ["8686:8686"];
               environment = commonEnv;
@@ -187,7 +187,7 @@
           radarr = {
             url = "http://radarr:7878";
             apiKey = secrets.radarrKey;
-            rootFolders = [{path = "/data/media/movies";}];
+            rootFolders = [{path = "/data/movies";}];
             downloadClient."qBittorrent" = {
               enable = true;
               fields = {
@@ -199,7 +199,7 @@
           sonarr = {
             url = "http://sonarr:8989";
             apiKey = secrets.sonarrKey;
-            rootFolders = [{path = "/data/media/shows";}];
+            rootFolders = [{path = "/data/shows";}];
             downloadClient."qBittorrent" = {
               enable = true;
               fields = {
@@ -211,7 +211,7 @@
           lidarr = {
             url = "http://lidarr:8686";
             apiKey = secrets.lidarrKey;
-            rootFolders = [{path = "/data/media/music";}];
+            rootFolders = [{path = "/data/music";}];
             downloadClient."qBittorrent" = {
               enable = true;
               fields = {
