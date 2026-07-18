@@ -26,11 +26,18 @@
         Restart = "always";
         User = "zennotes";
         Group = "zennotes";
+
+        PrivateTmp = false;
+        ProtectSystem = "off";
+        ProtectHome = false;
+        PrivateDevices = false;
+
         Environment = [
           "PORT=${toString port}"
           "VAULT_PATH=${vaultPath}"
         ];
         ReadWritePaths = [vaultPath];
+        SupplementaryGroups = [config.admin.name];
       };
     };
   };
