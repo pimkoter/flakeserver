@@ -25,10 +25,15 @@
         User = "zennotes";
         Group = "zennotes";
 
-        # --- The Magic Trick ---
-        BindPaths = ["/home/pim/notes:/var/empty/ZenNotesVault"];
+        # 1. Remove BindPaths (Fixes 226/NAMESPACE)
+        # 2. Set HOME to your notes folder.
+        #    The binary will look for /home/pim/notes/ZenNotesVault
+        Environment = [
+          "PORT=${toString port}"
+          "HOME=/home/pim/notes"
+        ];
 
-        # Sandbox overrides
+        # 3. Disable Sandboxing explicitly
         RestrictNamespaces = false;
         SystemCallFilter = [];
         PrivateTmp = false;
