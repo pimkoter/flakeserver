@@ -25,16 +25,16 @@
         User = "zennotes";
         Group = "zennotes";
 
-        # --- Environment Variables ---
-        # We use these to override the defaults
+        # --- FIX: Set HOME to the parent of your vault ---
+        # If your vault is /home/pim/notes, set HOME to /home/pim/notes
+        # The app will then look for /home/pim/notes/ZenNotesVault
         Environment = [
           "PORT=${toString port}"
-          "VAULT_PATH=${vaultPath}"
-          # Bind to 0.0.0.0 so other devices on your network can access it
+          "HOME=${vaultPath}"
           "BIND_ADDRESS=0.0.0.0"
         ];
 
-        # --- Sandbox Disables ---
+        # Sandbox overrides
         RestrictNamespaces = false;
         SystemCallFilter = [];
         PrivateTmp = false;
@@ -47,8 +47,8 @@
       };
     };
 
-    # Automatically ensure the vault directory exists and is owned by zennotes
     systemd.tmpfiles.rules = [
+      # Ensure the directory exists
       "d '${vaultPath}' 0755 zennotes zennotes - -"
     ];
   };
