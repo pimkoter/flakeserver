@@ -25,14 +25,8 @@
         User = "zennotes";
         Group = "zennotes";
 
-        # --- FIX: Set HOME to the parent of your vault ---
-        # If your vault is /home/pim/notes, set HOME to /home/pim/notes
-        # The app will then look for /home/pim/notes/ZenNotesVault
-        Environment = [
-          "PORT=${toString port}"
-          "HOME=${vaultPath}"
-          "BIND_ADDRESS=0.0.0.0"
-        ];
+        # --- The Magic Trick ---
+        BindPaths = ["/home/pim/notes:/var/empty/ZenNotesVault"];
 
         # Sandbox overrides
         RestrictNamespaces = false;
@@ -43,13 +37,7 @@
         PrivateDevices = false;
 
         Restart = "always";
-        ReadWritePaths = [vaultPath];
       };
     };
-
-    systemd.tmpfiles.rules = [
-      # Ensure the directory exists
-      "d '${vaultPath}' 0755 zennotes zennotes - -"
-    ];
   };
 }
