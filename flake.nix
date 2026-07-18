@@ -5,7 +5,7 @@
     import-tree.url = "github:vic/import-tree";
     declarr.url = "github:upidapi/declarr";
     zennotes = {
-      url = "github:ZenNotes/zennotes";
+      url = "github:pimkoter/zennotes";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
