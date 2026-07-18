@@ -22,25 +22,34 @@
 
       serviceConfig = {
         ExecStart = "${zennotes-pkg}/bin/zennotes-server";
-        Restart = "always";
         User = "zennotes";
-        Group = "zennotes"; # This is the primary group, it MUST exist
+        Group = "zennotes";
 
-        # Remove this line:
-        # SupplementaryGroups = [ config.admin.name ];
-
-        # Keep the namespaces open to ensure binary compatibility
-        PrivateTmp = false;
-        ProtectSystem = "off";
-        ProtectHome = false;
-        PrivateDevices = false;
-
+        # --- Environment Variables ---
+        # We use these to override the defaults
         Environment = [
           "PORT=${toString port}"
           "VAULT_PATH=${vaultPath}"
+          # Bind to 0.0.0.0 so other devices on your network can access it
+          "BIND_ADDRESS=0.0.0.0"
         ];
+
+        # --- Sandbox Disables ---
+        RestrictNamespaces = false;
+        SystemCallFilter = [];
+        PrivateTmp = false;
+        ProtectSystem = "no";
+        ProtectHome = "no";
+        PrivateDevices = false;
+
+        Restart = "always";
         ReadWritePaths = [vaultPath];
       };
     };
+
+    # Automatically ensure the vault directory exists and is owned by zennotes
+    systemd.tmpfiles.rules = [
+      "d '${vaultPath}' 0755 zennotes zennotes - -"
+    ];
   };
 }
