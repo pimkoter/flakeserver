@@ -20,6 +20,7 @@ in {
 
       # Host specific modules
       immich
+      zennotes
       homeAssistant
       mediaDrive
     ];

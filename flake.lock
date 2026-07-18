@@ -125,7 +125,8 @@
         "disko": "disko",
         "flake-parts": "flake-parts",
         "import-tree": "import-tree",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "zennotes": "zennotes"
       }
     },
     "systems": {
@@ -140,6 +141,26 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "zennotes": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784326940,
+        "narHash": "sha256-SYHReGi8CpElUPetTrWFsa1k8LYdp3Ffo5JFirAPGG4=",
+        "owner": "ZenNotes",
+        "repo": "zennotes",
+        "rev": "8025f63745e631618b3ba081135e58c8d25d20b3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ZenNotes",
+        "repo": "zennotes",
         "type": "github"
       }
     }
