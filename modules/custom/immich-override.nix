@@ -58,6 +58,7 @@
         if cfg.database.enable then config.services.postgresql.package else pkgs.postgresql;
     in
     {
+      disabledModules = [ "services/web-apps/immich.nix" ];
       imports = [
         (lib.mkRemovedOptionModule
           [
