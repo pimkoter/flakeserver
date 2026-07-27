@@ -58,7 +58,7 @@
         if cfg.database.enable then config.services.postgresql.package else pkgs.postgresql;
     in
     {
-      disabledModules = "services/web-apps/immich.nix";
+      disabledModules = [ "services/web-apps/immich.nix" ];
       imports = [
         (lib.mkRemovedOptionModule
           [
@@ -435,9 +435,9 @@
             SyslogIdentifier = "immich";
             RuntimeDirectory = "immich";
             ReadWritePaths = [ cfg.mediaLocation ];
+            ReadOnlyPaths = [ "/media" ];
             User = cfg.user;
             Group = cfg.group;
-            # ensure that immich-server has permission to connect to the redis socket.
             SupplementaryGroups = mkIf (cfg.redis.enable && isRedisUnixSocket) [
               config.services.redis.servers.immich.group
             ];
