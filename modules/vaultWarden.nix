@@ -15,7 +15,6 @@
           DOMAIN = "https://beta.taile21df4.ts.net";
           SIGNUPS_ALLOWED = true;
           ADMIN_TOKEN = "";
-          LOG_FILE = "/var/lib/bitwarden_rs/access.log";
         };
       };
 
