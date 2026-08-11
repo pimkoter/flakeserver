@@ -151,11 +151,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786486091,
-        "narHash": "sha256-bEhn17amiqIRHdEtawMfby0bQrosPynBKBrDLRWBCm8=",
+        "lastModified": 1786488153,
+        "narHash": "sha256-K46Y/0OyX/3E76+UyeeCTfq1j4Arq1uPuz+mEBmu4sQ=",
         "owner": "pimkoter",
         "repo": "zennotes",
-        "rev": "134aec89fdccc5ccd6b15e569c05928c3cee2929",
+        "rev": "1ebdd7f83722a5c34d09c1d3f18a9f1499179226",
         "type": "github"
       },
       "original": {
