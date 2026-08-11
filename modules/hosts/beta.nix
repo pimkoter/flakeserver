@@ -2,12 +2,14 @@
   self,
   inputs,
   ...
-}: let
+}:
+let
   name = "beta";
-in {
+in
+{
   flake.nixosConfigurations.${name} = inputs.nixpkgs.lib.nixosSystem {
     modules = with self.nixosModules; [
-      {settings.hostName = name;}
+      { settings.hostName = name; }
       # Default modules
       boot
       disko
@@ -21,6 +23,7 @@ in {
       # Host specific modules
       immich
       zennotes
+      vaultWarden
       homeAssistant
       mediaDrive
     ];
