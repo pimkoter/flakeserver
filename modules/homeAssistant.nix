@@ -24,8 +24,14 @@
       };
     };
     networking.firewall = {
-      allowedTCPPorts = [8123 1400];
-      allowedUDPPorts = [5353 1900];
+      allowedTCPPorts = [
+        8123
+        1400
+      ];
+      allowedUDPPorts = [
+        5353
+        1900
+      ];
     };
   };
 }

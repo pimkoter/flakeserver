@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{ inputs, ... }: {
   flake.nixosModules.boot = {
     imports = [
       "${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"

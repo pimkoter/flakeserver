@@ -1,6 +1,6 @@
-{inputs, ...}: {
-  flake.nixosModules.disko = {...}: {
-    imports = [inputs.disko.nixosModules.disko];
+{ inputs, ... }: {
+  flake.nixosModules.disko = { ... }: {
+    imports = [ inputs.disko.nixosModules.disko ];
     disko.devices = {
       disk = {
         sda = {
@@ -18,7 +18,7 @@
                   type = "filesystem";
                   format = "vfat";
                   mountpoint = "/boot";
-                  mountOptions = ["umask=0077"];
+                  mountOptions = [ "umask=0077" ];
                 };
               };
               swap = {
