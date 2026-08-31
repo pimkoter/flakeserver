@@ -74,8 +74,8 @@
               start = "192.168.178.50";
               end = "192.168.178.254";
               router = config.admin.routerIp;
-              leaseTime = "6h";
-              ipv6 = false;
+              leaseTime = "3h";
+              ipv6 = true;
               rapidCommit = true;
             };
             ntp = {
