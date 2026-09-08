@@ -4,6 +4,10 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
     declarr.url = "github:upidapi/declarr";
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zennotes = {
       url = "github:pimkoter/zennotes";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,6 +23,7 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         (inputs.import-tree ./modules)
+        inputs.microvm.nixosModules.microvm
       ];
     };
 }
