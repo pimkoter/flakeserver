@@ -30,7 +30,7 @@
           };
 
           disks = {
-            system = "/dev/disk/by-id/YOUR-INTERNAL-SSD";
+            system = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S2R6NB0J375639P";
             media = "/dev/disk/by-uuid/af91dd32-6299-4eb5-982b-f111b7cca4e3";
             mntPoint = "/media";
           };

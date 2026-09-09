@@ -4,6 +4,14 @@
     {
       imports = [ inputs.microvm.nixosModules.host ];
 
+      systemd.tmpfiles.rules = [
+        "d /var/lib/microvm/persistent 0755 root root -"
+        "d /var/lib/microvm/persistent/alpha 0755 root root -"
+        "d /var/lib/microvm/persistent/beta 0755 root root -"
+        "d /var/lib/microvm/persistent/gamma 0755 root root -"
+        "d /var/lib/microvm/persistent/delta 0755 root root -"
+      ];
+
       networking.bridges."br0".interfaces = [ "ens18" ];
       networking.interfaces."br0".ipv4.addresses = [
         {

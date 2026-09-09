@@ -23,16 +23,16 @@
             api = {
               active = true;
               allowedOrigins = [
-                "http://192.168.178.2"
-                "https://192.168.178.2"
+                "http://${config.settings.hosts.alpha.ipAddr}"
+                "https://${config.settings.hosts.alpha.ipAddr}"
               ];
             };
 
             webserver = {
               active = true;
               port = lib.mkForce "80";
-              domain = lib.mkForce "192.168.178.2";
-              api.pwhash = "$BALLOON-SHA256$v=1$s=1024,t=32$JmUiy69EGfJqy1/E9/o1Og==$KYi4l+qD/01Gj/J85mF9Ypg61eh2FylMYTVKqksDD/o="; # <-- to change: set misc.readOnly =false; run sudo pihole setpassword on the server, run sudo pihole-FTL --config webserver.api.pwhash and copy to api.pwhash !!DON'T FORGET TO SET MISC.READONLY TO FALSE AGAIN
+              domain = lib.mkForce config.settings.hosts.alpha.ipAddr;
+              api.pwhashFile = config.sops.secrets."pihole/pwhash".path;
             };
 
             dns = {

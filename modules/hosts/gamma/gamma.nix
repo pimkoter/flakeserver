@@ -21,6 +21,8 @@ in
       shell
       users
       settings
+      secrets
+      guest-common
 
       # Host specific modules
       jellyStack
