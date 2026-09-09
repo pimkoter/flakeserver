@@ -1,4 +1,4 @@
-{ config, lib, ... }: {
+{
   flake.nixosModules.proxy = { config, lib, ... }: {
     services.nginx = {
       enable = true;
@@ -34,6 +34,9 @@
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
+    networking.firewall.allowedTCPPorts = [
+      80
+      443
+    ];
   };
 }

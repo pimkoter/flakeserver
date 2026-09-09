@@ -35,6 +35,10 @@
             mntPoint = "/media";
           };
 
+          network = {
+            physicalInterface = "ens18"; # <--- UPDATE THIS to your real NIC name (e.g., eno1)
+          };
+
           admin = {
             hashedPassword = "$y$j9T$yMgfvvj7oXg25fspUIpvN0$Hv32VEd1FcaBhmA90kI9mfWzAJWp13ikJtj.8WfzYr.";
             gitHubAddr = "github.com/pimkoter/flakeserver";

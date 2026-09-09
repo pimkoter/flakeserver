@@ -12,7 +12,7 @@
         "d /var/lib/microvm/persistent/delta 0755 root root -"
       ];
 
-      networking.bridges."br0".interfaces = [ "ens18" ];
+      networking.bridges."br0".interfaces = [ config.settings.network.physicalInterface ];
       networking.interfaces."br0".ipv4.addresses = [
         {
           address = "192.168.178.10";

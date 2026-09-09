@@ -43,6 +43,14 @@ let
       default = "/media";
     };
   };
+
+  networkSettings = {
+    physicalInterface = lib.mkOption {
+      type = lib.types.str;
+      default = "ens18";
+      description = "The physical network interface name on the hypervisor host";
+    };
+  };
 in
 {
   flake.nixosModules.settings = {
@@ -59,6 +67,7 @@ in
 
       admin = adminSettings;
       disks = diskSettings;
+      network = networkSettings;
     };
   };
 }
