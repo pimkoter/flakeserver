@@ -26,14 +26,28 @@
 
       systemd.network = {
         enable = true;
-        # Physical interface - no IP, just a bridge member
-        networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
-          name = config.settings.network.physicalInterface;
-          networkConfig.Bridge = "br0";
+
+        # 1. Create the Bridge Device (Host Only)
+        netdevs = lib.mkIf (config.settings.hostName == "omega") {
+          "20-br0" = {
+            netdevConfig = {
+              Name = "br0";
+              Kind = "bridge";
+            };
+          };
         };
-        # The Bridge (Host) or Virtual Interface (Guest)
+
+        # 2. Assign Physical Interface to Bridge (Host Only)
+        networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
+          # Matches your en01, but also works for enp... or eno... as a fallback
+          matchConfig.Name = [ config.settings.network.physicalInterface "en*" "eth*" ];
+          networkConfig.Bridge = "br0";
+          linkConfig.RequiredForOnline = "no";
+        };
+
+        # 3. Configure the Bridge (Host) or eth0 (Guest)
         networks."40-ethernet" = {
-          name = if config.settings.hostName == "omega" then "br0" else "eth0";
+          matchConfig.Name = if config.settings.hostName == "omega" then "br0" else "eth0";
           address = [
             "${
               if config.settings.hostName == "omega" then
@@ -43,7 +57,9 @@
             }"
           ];
           gateway = [ config.settings.admin.routerIp ];
-          dns = config.networking.nameservers ++ [ "1.1.1.1" ]; # Fallback to Cloudflare
+          dns = config.networking.nameservers ++ [ "1.1.1.1" ];
+          # Ensure bridge waits for carrier but doesn't block boot forever
+          linkConfig.RequiredForOnline = "routable";
         };
       };
 
