@@ -4,15 +4,17 @@
   ...
 }:
 let
-  name = "delta";
+  name = "gamma";
 in
 {
   flake.nixosConfigurations.${name} = inputs.nixpkgs.lib.nixosSystem {
+    specialArgs = {
+      inherit inputs self;
+    };
     modules = with self.nixosModules; [
       { settings.hostName = name; }
       # Default modules
       boot
-      disko
       miscellaneous
       networking
       pkgs
@@ -21,7 +23,9 @@ in
       settings
 
       # Host specific modules
-      exitNode
+      jellyStack
+      mediaDrive
+      ./_hardware.nix
     ];
   };
 }

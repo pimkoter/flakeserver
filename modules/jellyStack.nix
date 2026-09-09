@@ -6,7 +6,7 @@
       ...
     }:
     let
-      base = config.disks.mntPoint;
+      base = config.settings.disks.mntPoint;
 
       # Shared environment settings reused across all linuxserver.io containers
       commonEnv = {
@@ -235,7 +235,7 @@
             };
           };
         };
-        users.users.${config.admin.name}.extraGroups = [ "docker" ];
+        users.users.${config.settings.admin.name}.extraGroups = [ "docker" ];
       };
     };
 }

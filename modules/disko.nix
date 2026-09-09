@@ -1,41 +1,33 @@
 { inputs, ... }: {
-  flake.nixosModules.disko = { ... }: {
-    imports = [ inputs.disko.nixosModules.disko ];
-    disko.devices = {
-      disk = {
-        sda = {
-          type = "disk";
-          device = "/dev/sda";
-          content = {
-            type = "gpt";
-            partitions = {
-              ESP = {
-                priority = 1;
-                name = "ESP";
-                size = "512M";
-                type = "EF00";
-                content = {
-                  type = "filesystem";
-                  format = "vfat";
-                  mountpoint = "/boot";
-                  mountOptions = [ "umask=0077" ];
+  flake.nixosModules.disko =
+    { config, ... }:
+    {
+      imports = [ inputs.disko.nixosModules.disko ];
+
+      disko.devices = {
+        disk = {
+          main = {
+            device = config.settings.disks.system;
+            type = "disk";
+            content = {
+              type = "gpt";
+              partitions = {
+                ESP = {
+                  type = "EF00";
+                  size = "500M";
+                  content = {
+                    type = "filesystem";
+                    format = "vfat";
+                    mountpoint = "/boot";
+                  };
                 };
-              };
-              swap = {
-                priority = 2;
-                size = "2G";
-                content = {
-                  type = "swap";
-                  discardPolicy = "both";
-                };
-              };
-              root = {
-                priority = 3;
-                size = "100%";
-                content = {
-                  type = "filesystem";
-                  format = "ext4";
-                  mountpoint = "/";
+                root = {
+                  size = "100%";
+                  content = {
+                    type = "filesystem";
+                    format = "ext4";
+                    mountpoint = "/";
+                  };
                 };
               };
             };
@@ -43,5 +35,4 @@
         };
       };
     };
-  };
 }
