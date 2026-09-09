@@ -36,7 +36,7 @@
           };
 
           network = {
-            physicalInterface = "ens18"; # <--- UPDATE THIS to your real NIC name (e.g., eno1)
+            physicalInterface = "eno1";
           };
 
           admin = {
