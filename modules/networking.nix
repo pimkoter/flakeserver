@@ -15,11 +15,15 @@
             config.settings.hostName;
 
         useDHCP = false;
-        useNetworkd = true; # Use networkd for both host and guests for consistency
+        useNetworkd = true;
         networkmanager.enable = false;
+
+        firewall = {
+          enable = true;
+          trustedInterfaces = [ "tailscale0" ] ++ (lib.optional (config.settings.hostName == "omega") "br0");
+        };
       };
 
-      # Use systemd-networkd for static IPs and Gateways
       systemd.network = {
         enable = true;
         networks."40-ethernet" = {
@@ -35,11 +39,6 @@
           gateway = [ config.settings.admin.routerIp ];
           dns = config.networking.nameservers;
         };
-      };
-
-      services = {
-        enable = true;
-        trustedInterfaces = [ "tailscale0" ] ++ (lib.optional (config.settings.hostName == "omega") "br0");
       };
 
       services = {
