@@ -8,5 +8,6 @@
     # Common guest settings
     services.qemuGuest.enable = true;
     networking.useNetworkd = true;
+    networking.usePredictableInterfaceNames = false; # Force eth0 naming inside VMs
   };
 }
