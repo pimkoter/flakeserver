@@ -22,7 +22,6 @@ in
       shell
       users
       settings
-      secrets
 
       # Host specific modules
       hypervisor

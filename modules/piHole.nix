@@ -32,7 +32,7 @@
               active = true;
               port = lib.mkForce "80";
               domain = lib.mkForce config.settings.hosts.alpha.ipAddr;
-              api.pwhashFile = config.sops.secrets."pihole/pwhash".path;
+              api.pwhash = "$BALLOON-SHA256$v=1$s=1024,t=32$JmUiy69EGfJqy1/E9/o1Og==$KYi4l+qD/01Gj/J85mF9Ypg61eh2FylMYTVKqksDD/o=";
             };
 
             dns = {

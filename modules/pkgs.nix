@@ -11,9 +11,6 @@
       git
       lazygit
       lazydocker
-      sops
-      age
-      jq
     ];
   };
 }
