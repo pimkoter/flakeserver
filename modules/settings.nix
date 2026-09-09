@@ -4,7 +4,7 @@
     {
       config = {
         settings = {
-          hostName = "omega";
+          hostName = lib.mkDefault "omega";
 
           hosts = {
             alpha = {

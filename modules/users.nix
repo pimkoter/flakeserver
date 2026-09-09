@@ -5,9 +5,9 @@
 }:
 {
   flake.nixosModules.users = { config, ... }: {
-    users.users.${config.admin.name} = {
+    users.users.${config.settings.admin.name} = {
       isNormalUser = true;
-      hashedPassword = config.admin.hashedPassword;
+      hashedPassword = config.settings.admin.hashedPassword;
       extraGroups = [
         "wheel"
         "docker"

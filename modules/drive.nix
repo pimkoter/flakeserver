@@ -1,7 +1,7 @@
 {
   flake.nixosModules.mediaDrive = { config, ... }: {
-    fileSystems.${config.disks.mntPoint} = {
-      device = config.disks.media;
+    fileSystems.${config.settings.disks.mntPoint} = {
+      device = config.settings.disks.media;
       fsType = "ext4";
     };
 

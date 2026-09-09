@@ -2,7 +2,7 @@
   flake.nixosModules.immich =
     { config, lib, ... }:
     let
-      baseDir = "${config.disks.mntPoint}/foto";
+      baseDir = "${config.settings.disks.mntPoint}/foto";
       immichDataDir = "${baseDir}/immich-data";
 
       # Immich's required integrity subdirectories
