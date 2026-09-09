@@ -24,28 +24,28 @@
         };
       };
 
+      services.resolved.enable = true;
+
       systemd.network = {
         enable = true;
 
-        # 1. Create the Bridge Device (Host Only)
         netdevs = lib.mkIf (config.settings.hostName == "omega") {
           "20-br0" = {
             netdevConfig = {
               Name = "br0";
               Kind = "bridge";
+              # Inherit MAC from physical card to avoid router confusion
+              MACAddress = "none";
             };
           };
         };
 
-        # 2. Assign Physical Interface to Bridge (Host Only)
         networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
-          # Matches your en01, but also works for enp... or eno... as a fallback
           matchConfig.Name = [ config.settings.network.physicalInterface "en*" "eth*" ];
           networkConfig.Bridge = "br0";
           linkConfig.RequiredForOnline = "no";
         };
 
-        # 3. Configure the Bridge (Host) or eth0 (Guest)
         networks."40-ethernet" = {
           matchConfig.Name = if config.settings.hostName == "omega" then "br0" else "eth0";
           address = [
@@ -56,9 +56,15 @@
                 "${config.settings.hosts.${config.settings.hostName}.ipAddr}/24"
             }"
           ];
-          gateway = [ config.settings.admin.routerIp ];
+          routes = [
+            {
+              routeConfig = {
+                Gateway = config.settings.admin.routerIp;
+                Metric = 10; # Lower metric wins (Bridge > Wifi)
+              };
+            }
+          ];
           dns = config.networking.nameservers ++ [ "1.1.1.1" ];
-          # Ensure bridge waits for carrier but doesn't block boot forever
           linkConfig.RequiredForOnline = "routable";
         };
       };
@@ -79,7 +85,6 @@
           bantime = "10m";
           bantime-increment.factor = "6";
         };
-        resolved.enable = false;
       };
     };
 }
