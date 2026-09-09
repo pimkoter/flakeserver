@@ -34,20 +34,19 @@
             netdevConfig = {
               Name = "br0";
               Kind = "bridge";
-              # Inherit MAC from physical card to avoid router confusion
               MACAddress = "none";
+            };
+            bridgeConfig = {
+              STP = false;
+              ForwardDelaySec = 0;
             };
           };
         };
 
         networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
-          matchConfig.Name = [
-            config.settings.network.physicalInterface
-            "en*"
-            "eth*"
-          ];
+          matchConfig.Name = config.settings.network.physicalInterface;
           networkConfig.Bridge = "br0";
-          linkConfig.RequiredForOnline = "no";
+          linkConfig.RequiredForOnline = "enslaved";
         };
 
         networks."40-ethernet" = {
@@ -62,8 +61,10 @@
           ];
           routes = [
             {
-              Gateway = config.settings.admin.routerIp;
-              Metric = 10; # Lower metric wins (Bridge > Wifi)
+              routeConfig = {
+                Gateway = config.settings.admin.routerIp;
+                Metric = 10;
+              };
             }
           ];
           dns = config.networking.nameservers ++ [ "1.1.1.1" ];
