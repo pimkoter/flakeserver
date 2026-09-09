@@ -41,7 +41,11 @@
         };
 
         networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
-          matchConfig.Name = [ config.settings.network.physicalInterface "en*" "eth*" ];
+          matchConfig.Name = [
+            config.settings.network.physicalInterface
+            "en*"
+            "eth*"
+          ];
           networkConfig.Bridge = "br0";
           linkConfig.RequiredForOnline = "no";
         };
@@ -58,10 +62,8 @@
           ];
           routes = [
             {
-              routeConfig = {
-                Gateway = config.settings.admin.routerIp;
-                Metric = 10; # Lower metric wins (Bridge > Wifi)
-              };
+              Gateway = config.settings.admin.routerIp;
+              Metric = 10; # Lower metric wins (Bridge > Wifi)
             }
           ];
           dns = config.networking.nameservers ++ [ "1.1.1.1" ];
