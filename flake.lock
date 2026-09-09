@@ -185,8 +185,7 @@
         "git-hooks": "git-hooks",
         "import-tree": "import-tree",
         "microvm": "microvm",
-        "nixpkgs": "nixpkgs_2",
-        "zennotes": "zennotes"
+        "nixpkgs": "nixpkgs_2"
       }
     },
     "spectrum": {
@@ -217,26 +216,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
-        "type": "github"
-      }
-    },
-    "zennotes": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786488153,
-        "narHash": "sha256-K46Y/0OyX/3E76+UyeeCTfq1j4Arq1uPuz+mEBmu4sQ=",
-        "owner": "pimkoter",
-        "repo": "zennotes",
-        "rev": "1ebdd7f83722a5c34d09c1d3f18a9f1499179226",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pimkoter",
-        "repo": "zennotes",
         "type": "github"
       }
     }
