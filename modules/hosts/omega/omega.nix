@@ -8,6 +8,9 @@ let
 in
 {
   flake.nixosConfigurations.${name} = inputs.nixpkgs.lib.nixosSystem {
+    specialArgs = {
+      inherit inputs self;
+    };
     modules = with self.nixosModules; [
       { settings.hostName = name; }
       # Default modules
@@ -21,6 +24,7 @@ in
       settings
 
       # Host specific modules
+      hypervisor
     ];
   };
 }
