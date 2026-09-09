@@ -15,34 +15,31 @@
             config.settings.hostName;
 
         useDHCP = false;
+        useNetworkd = true; # Use networkd for both host and guests for consistency
         networkmanager.enable = false;
-        defaultGateway = {
-          address = config.settings.admin.routerIp;
-          interface = if config.settings.hostName == "omega" then "br0" else "eth0";
+      };
+
+      # Use systemd-networkd for static IPs and Gateways
+      systemd.network = {
+        enable = true;
+        networks."40-ethernet" = {
+          name = if config.settings.hostName == "omega" then "br0" else "eth0";
+          address = [
+            "${
+              if config.settings.hostName == "omega" then
+                "192.168.178.10/24"
+              else
+                "${config.settings.hosts.${config.settings.hostName}.ipAddr}/24"
+            }"
+          ];
+          gateway = [ config.settings.admin.routerIp ];
+          dns = config.networking.nameservers;
         };
-        interfaces =
-          if config.settings.hostName == "omega" then
-            {
-              br0.ipv4.addresses = [
-                {
-                  address = "192.168.178.10";
-                  prefixLength = 24;
-                }
-              ];
-            }
-          else
-            {
-              eth0.ipv4.addresses = [
-                {
-                  address = config.settings.hosts.${config.settings.hostName}.ipAddr;
-                  prefixLength = 24;
-                }
-              ];
-            };
-        firewall = {
-          enable = true;
-          trustedInterfaces = [ "tailscale0" ] ++ (lib.optional (config.settings.hostName == "omega") "br0");
-        };
+      };
+
+      services = {
+        enable = true;
+        trustedInterfaces = [ "tailscale0" ] ++ (lib.optional (config.settings.hostName == "omega") "br0");
       };
 
       services = {
