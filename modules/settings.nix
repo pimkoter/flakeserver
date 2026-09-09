@@ -36,7 +36,7 @@
           };
 
           network = {
-            physicalInterface = "en01";
+            physicalInterface = "eno1";
           };
 
           admin = {
