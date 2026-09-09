@@ -36,7 +36,7 @@
           };
 
           admin = {
-            hashedPassword = "REPLACE_WITH_HASH";
+            hashedPassword = "$y$j9T$yMgfvvj7oXg25fspUIpvN0$Hv32VEd1FcaBhmA90kI9mfWzAJWp13ikJtj.8WfzYr.";
             gitHubAddr = "github.com/pimkoter/flakeserver";
           };
         };
