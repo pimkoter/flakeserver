@@ -26,6 +26,12 @@
 
       systemd.network = {
         enable = true;
+        # Physical interface - no IP, just a bridge member
+        networks."30-physical" = lib.mkIf (config.settings.hostName == "omega") {
+          name = config.settings.network.physicalInterface;
+          networkConfig.Bridge = "br0";
+        };
+        # The Bridge (Host) or Virtual Interface (Guest)
         networks."40-ethernet" = {
           name = if config.settings.hostName == "omega" then "br0" else "eth0";
           address = [
@@ -37,7 +43,7 @@
             }"
           ];
           gateway = [ config.settings.admin.routerIp ];
-          dns = config.networking.nameservers;
+          dns = config.networking.nameservers ++ [ "1.1.1.1" ]; # Fallback to Cloudflare
         };
       };
 
