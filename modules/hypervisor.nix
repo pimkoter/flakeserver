@@ -13,6 +13,13 @@
       ];
 
       networking.bridges."br0".interfaces = [ config.settings.network.physicalInterface ];
+
+      # Enable IP forwarding for the bridge to work correctly
+      boot.kernel.sysctl = {
+        "net.ipv4.ip_forward" = 1;
+        "net.ipv6.conf.all.forwarding" = 1;
+      };
+
       networking.interfaces."br0".ipv4.addresses = [
         {
           address = "192.168.178.10";

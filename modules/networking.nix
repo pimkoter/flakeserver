@@ -41,7 +41,7 @@
             };
         firewall = {
           enable = true;
-          trustedInterfaces = [ "tailscale0" ];
+          trustedInterfaces = [ "tailscale0" ] ++ (lib.optional (config.settings.hostName == "omega") "br0");
         };
       };
 
