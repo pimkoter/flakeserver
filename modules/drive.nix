@@ -3,6 +3,10 @@
     fileSystems.${config.settings.disks.mntPoint} = {
       device = config.settings.disks.media;
       fsType = "ext4";
+      options = [
+        "nofail"
+        "X-systemd.device-timeout=30s"
+      ];
     };
 
     boot.kernelParams = [
