@@ -8,11 +8,13 @@ let
 in
 {
   flake.nixosConfigurations.${name} = inputs.nixpkgs.lib.nixosSystem {
+    specialArgs = {
+      inherit inputs self;
+    };
     modules = with self.nixosModules; [
       { settings.hostName = name; }
       # Default modules
       boot
-      disko
       miscellaneous
       networking
       pkgs
@@ -23,6 +25,7 @@ in
       # Host specific modules
       jellyStack
       mediaDrive
+      ./_hardware.nix
     ];
   };
 }
