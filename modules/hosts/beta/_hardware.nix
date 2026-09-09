@@ -23,6 +23,11 @@
         source = "/var/lib/microvm/persistent/${config.settings.hostName}";
         mountPoint = "/var/lib";
       }
+      {
+        tag = "media";
+        source = config.settings.disks.mntPoint;
+        mountPoint = config.settings.disks.mntPoint;
+      }
     ];
   };
 }

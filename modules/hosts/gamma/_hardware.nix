@@ -12,12 +12,6 @@
         mac = "02:00:00:00:00:04";
       }
     ];
-    devices = [
-      {
-        bus = "pci";
-        path = config.settings.disks.media;
-      }
-    ];
     shares = [
       {
         tag = "ro-nix-store";
@@ -28,6 +22,11 @@
         tag = "persistent";
         source = "/var/lib/microvm/persistent/${config.settings.hostName}";
         mountPoint = "/var/lib";
+      }
+      {
+        tag = "media";
+        source = config.settings.disks.mntPoint;
+        mountPoint = config.settings.disks.mntPoint;
       }
     ];
   };

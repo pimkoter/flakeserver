@@ -26,6 +26,7 @@ in
       # Host specific modules
       hypervisor
       proxy
+      mediaDrive
       ./_hardware.nix
     ];
   };

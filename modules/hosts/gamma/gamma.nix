@@ -25,7 +25,6 @@ in
 
       # Host specific modules
       jellyStack
-      mediaDrive
       ./_hardware.nix
     ];
   };

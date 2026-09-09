@@ -20,21 +20,6 @@
         }
       ];
 
-      boot = {
-        initrd = {
-          availableKernelModules = [
-            "xhci_pci"
-            "ahci"
-            "usbhid"
-            "usb_storage"
-            "sd_mod"
-            "rtsx_pci_sdmmc"
-          ];
-          kernelModules = [ "dm-snapshot" ];
-        };
-        kernelModules = [ "kvm-intel" ];
-      };
-
       microvm.vms = {
         alpha = {
           flake = self;

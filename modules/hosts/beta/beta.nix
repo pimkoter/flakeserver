@@ -29,7 +29,6 @@ in
         immich
         vaultWarden
         homeAssistant
-        mediaDrive
         ./_hardware.nix
       ];
   };
